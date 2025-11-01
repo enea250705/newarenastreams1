@@ -1,95 +1,98 @@
 # Arena Streams - Sports Streaming Platform
 
-A modern, responsive sports streaming platform built with React, TypeScript, and Tailwind CSS.
+A pure HTML/CSS/JavaScript sports streaming platform with live match viewing, multiple sports categories, and integrated popunder ad system.
 
-## Features
+## 🚀 Quick Start
 
-- 🎯 Modern and attractive UI design
-- 📱 Fully responsive (mobile, tablet, desktop)
-- 🏈 Multiple sports categories (Football, Basketball, Tennis, and more)
-- 🔴 Live match streaming with real-time indicators
-- 👥 Live viewer counts
-- 💬 Live chat functionality
-- ⭐ Favorite matches
-- 🔍 Search functionality
-- 🎨 Beautiful gradients and animations
-- ⚡ Fast and optimized with Vite
+### Running Locally
 
-## Tech Stack
+1. Navigate to the `public` directory:
+   ```bash
+   cd public
+   ```
 
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **React Router** - Navigation
-- **Tailwind CSS** - Styling
-- **Lucide React** - Icons
+2. Start a local server:
+   ```bash
+   # Python 3
+   python -m http.server 8000
+   
+   # Python 2
+   python -m SimpleHTTPServer 8000
+   
+   # Node.js (if you have http-server installed)
+   npx http-server
+   ```
 
-## Getting Started
+3. Open your browser:
+   ```
+   http://localhost:8000
+   ```
 
-### Installation
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Start the development server:
-```bash
-npm run dev
-```
-
-3. Open your browser and navigate to `http://localhost:5173`
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-npm run preview
-```
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-src/
-├── components/         # Reusable components
-│   ├── Header.tsx     # Navigation header
-│   ├── MatchCard.tsx  # Match display card
-│   ├── LiveBadge.tsx  # Live indicator
-│   └── SportIcon.tsx  # Sport category icon
-├── pages/             # Page components
-│   ├── Home.tsx       # Homepage
-│   ├── Matches.tsx    # All matches page
-│   ├── Sports.tsx     # Sport-specific page
-│   └── WatchStream.tsx # Streaming page
-├── App.tsx            # Main app component
-├── main.tsx           # Entry point
-└── index.css          # Global styles
+public/
+├── index.html              # Homepage
+├── matches.html            # All matches page
+├── watch.html              # Stream player page
+├── football.html           # Football category
+├── basketball.html         # Basketball category
+├── american-football.html  # American Football category
+├── hockey.html             # Hockey category
+├── baseball.html           # Baseball category
+├── tennis.html             # Tennis category
+├── fight.html              # MMA/Fighting category
+├── cricket.html            # Cricket category
+├── rugby.html              # Rugby category
+├── motor-sports.html       # Motor Sports category
+├── js/
+│   ├── api.js              # API integration
+│   ├── home.js             # Homepage functionality
+│   └── ad-script.js        # Popunder ad system
+├── manifest.json           # PWA manifest
+├── robots.txt              # SEO robots file
+└── sitemap.xml             # SEO sitemap
 ```
 
-## API Integration
+## ✨ Features
 
-The app is ready for API integration. Mock data is currently used in:
-- `src/pages/Home.tsx` - Live and upcoming matches
-- `src/pages/Matches.tsx` - All matches with filters
-- `src/pages/Sports.tsx` - Sport-specific matches
-- `src/pages/WatchStream.tsx` - Match details and stream data
+- 🏆 **Multiple Sports Categories**: Football, Basketball, Tennis, UFC, Hockey, Baseball, Cricket, Rugby, American Football, Motor Sports
+- 📺 **Live Streaming**: Watch matches with 10 streaming server options
+- 🎯 **Real-time Match Data**: Fetches live matches from Streamed.pk API
+- 💰 **Popunder Ad System**: Integrated intellipopup ad network
+- 📱 **Responsive Design**: Works on desktop, tablet, and mobile
+- 🔍 **SEO Optimized**: Meta tags, sitemap, robots.txt, structured data
+- ⚡ **Fast Loading**: Pure HTML/CSS/JS - no build process required
 
-Replace the mock data with your API calls to fetch real match information.
+## 🎮 API Integration
 
-## Customization
+The platform integrates with the Streamed.pk API:
+- **Base URL**: `https://streamed.pk/api/`
+- **Endpoints**:
+  - `/api/matches/live` - Live matches
+  - `/api/matches/all-today` - Today's matches
+  - `/api/stream/{source}/{id}` - Stream data
+  - `/api/sports` - Available sports
+  - `/api/images/badge/{id}.webp` - Team badges
 
-### Colors
-Edit `tailwind.config.js` to customize the color scheme.
+## 💻 Technologies
 
-### Components
-All components are modular and can be easily customized in the `src/components/` directory.
+- **HTML5** - Semantic markup
+- **CSS3** - Tailwind CSS utility classes (inline styles)
+- **JavaScript (ES6+)** - Vanilla JS, no frameworks
+- **API Integration** - Fetch API for data
 
-## License
+## 📝 Documentation
 
-MIT
+- `HTML_VERSION_GUIDE.md` - HTML version setup guide
+- `QUICK_START_HTML.md` - Quick start instructions
+- `SEO_OPTIMIZATIONS.md` - SEO implementation details
+- `AD_SYSTEM_EXPLANATION.md` - Ad integration guide
 
+## 🌐 Deployment
+
+Simply upload the `public` folder contents to any web server. No build process needed!
+
+## 📄 License
+
+This project is for educational purposes.
