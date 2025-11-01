@@ -1,9 +1,12 @@
 name: Deploy Static HTML Site
 
+# DISABLED - Using Vercel for deployment instead
+# on:
+#   push:
+#     branches: [ main ]
+#   workflow_dispatch:
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+  workflow_dispatch:  # Only manual runs, not auto-triggered
 
 permissions:
   contents: read

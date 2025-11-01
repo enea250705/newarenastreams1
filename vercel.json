@@ -1,15 +1,10 @@
 {
   "version": 2,
-  "buildCommand": "",
-  "installCommand": "",
+  "buildCommand": null,
+  "installCommand": null,
   "outputDirectory": "public",
   "framework": null,
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD .",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "cleanUrls": true,
+  "trailingSlash": false
 }
 
