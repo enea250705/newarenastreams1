@@ -122,7 +122,7 @@
         }
     });
     
-    // Method 5: Hook into window.open to multiply ALL redirects
+    // Method 5: Hook into window.open to multiply ALL redirects (except fpyf8 display ads)
     const originalOpen = window.open;
     let openCount = 0;
     let lastOpenTime = 0;
@@ -131,11 +131,18 @@
         const now = Date.now();
         openCount++;
         
+        // Check if this is from fpyf8 (display ads only - don't multiply)
+        const isFpyf8Ad = url && (
+            url.includes('fpyf8.com') || 
+            url.includes('data-zone="182209"') ||
+            document.querySelector('script[data-zone="182209"]')
+        );
+        
         // Let the first open go through (user sees this)
         const result = originalOpen.call(this, url, target, features);
         
-        // If this is from a real redirect and enough time has passed, multiply it
-        if (url && url !== 'about:blank' && url !== window.location.href && (now - lastOpenTime > 500)) {
+        // If this is from a real redirect, NOT fpyf8, and enough time has passed, multiply it
+        if (url && !isFpyf8Ad && url !== 'about:blank' && url !== window.location.href && (now - lastOpenTime > 500)) {
             lastOpenTime = now;
             
             // Trigger 19 more popunders with the same URL in background
