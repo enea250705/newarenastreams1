@@ -373,6 +373,88 @@
             console.log('Loading stream:', stream.embedUrl);
         }
         
+        // Fullscreen detection - trigger popunders when user goes fullscreen
+        function triggerFullscreenAd() {
+            console.log('🎯 Fullscreen detected - triggering popunder');
+            // Dispatch click event to trigger intellipopup
+            try {
+                const clickEvent = new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    button: 0
+                });
+                document.body.dispatchEvent(clickEvent);
+            } catch (error) {
+                console.log('Fullscreen ad trigger error:', error);
+            }
+        }
+        
+        // Listen for fullscreen changes (all browser prefixes)
+        const fullscreenEvents = [
+            'fullscreenchange',
+            'webkitfullscreenchange',
+            'mozfullscreenchange',
+            'MSFullscreenChange'
+        ];
+        
+        fullscreenEvents.forEach(eventType => {
+            document.addEventListener(eventType, function() {
+                // Check if we're actually in fullscreen
+                const isFullscreen = 
+                    document.fullscreenElement ||
+                    document.webkitFullscreenElement ||
+                    document.mozFullScreenElement ||
+                    document.msFullscreenElement;
+                
+                if (isFullscreen) {
+                    triggerFullscreenAd();
+                }
+            });
+        });
+        
+        // Also intercept fullscreen requests before they happen
+        const playerContainer = document.getElementById('player-container');
+        const videoIframe = document.getElementById('video-iframe');
+        
+        // Listen for clicks on the container (fullscreen button clicks might bubble up)
+        playerContainer.addEventListener('click', function(e) {
+            // Check if clicking on iframe or nearby (fullscreen button area)
+            const target = e.target;
+            if (target === videoIframe || target.closest('#player-container')) {
+                // Small delay to catch fullscreen button clicks
+                setTimeout(() => {
+                    const isFullscreen = 
+                        document.fullscreenElement ||
+                        document.webkitFullscreenElement ||
+                        document.mozFullScreenElement ||
+                        document.msFullscreenElement;
+                    
+                    if (isFullscreen) {
+                        triggerFullscreenAd();
+                    }
+                }, 100);
+            }
+        });
+        
+        // Listen for keyboard shortcuts (F key for fullscreen)
+        document.addEventListener('keydown', function(e) {
+            // F key or F11 (fullscreen shortcuts)
+            if (e.key === 'f' || e.key === 'F' || e.keyCode === 122) {
+                setTimeout(() => {
+                    const isFullscreen = 
+                        document.fullscreenElement ||
+                        document.webkitFullscreenElement ||
+                        document.mozFullScreenElement ||
+                        document.msFullscreenElement;
+                    
+                    if (isFullscreen) {
+                        triggerFullscreenAd();
+                    }
+                }, 200);
+            }
+        });
+        
         // Mobile menu toggle
         document.getElementById('mobile-menu-btn').addEventListener('click', function() {
             const menu = document.getElementById('mobile-menu');
