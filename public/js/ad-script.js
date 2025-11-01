@@ -1,5 +1,5 @@
 // Popunder Ad Script - Ensures popunders on ALMOST EVERY click
-// The plumprush script handles actual popunders, this ensures all clicks are captured
+// The intellipopup script handles actual popunders, this ensures all clicks are captured
 (function() {
     'use strict';
     
@@ -9,11 +9,11 @@
     let lastClickTime = 0;
     const MIN_DELAY = 100; // 0.1 seconds between triggers (extremely fast - almost every click!)
     
-    // Function to ensure click is captured by plumprush
+    // Function to ensure click is captured by intellipopup
     function ensureClickCaptured() {
         try {
-            // Dispatch a click event to help plumprush detect it
-            // This ensures the click bubbles and plumprush can capture it
+            // Dispatch a click event to help intellipopup detect it
+            // This ensures the click bubbles and intellipopup can capture it
             const clickEvent = new MouseEvent('click', {
                 bubbles: true,
                 cancelable: true,
@@ -21,10 +21,10 @@
                 button: 0
             });
             
-            // Dispatch on document body so plumprush can catch it
+            // Dispatch on document body so intellipopup can catch it
             document.body.dispatchEvent(clickEvent);
             
-            console.log('✅ Click event dispatched - plumprush should trigger popunder');
+            console.log('✅ Click event dispatched - intellipopup should trigger popunder');
         } catch (error) {
             console.log('Ad trigger error:', error);
         }
