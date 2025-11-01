@@ -230,6 +230,8 @@
     
     <script src="js/api.js"></script>
     <script src="js/search.js"></script>
+    <script src="js/ga-tracking.js"></script>
+
     <script>
         let allStreams = [];
         let currentMatch = null;
@@ -265,6 +267,14 @@
                 
                 // Display match info
                 displayMatchInfo();
+                
+                // Track match view in Google Analytics
+                if (window.GATracking) {
+                    const matchTitle = currentMatch.homeTeam && currentMatch.awayTeam
+                        ? `${currentMatch.homeTeam} vs ${currentMatch.awayTeam} Live Stream`
+                        : currentMatch.homeTeam || 'Live Stream';
+                    window.GATracking.trackMatchView(matchId, matchTitle);
+                }
                 
                 // Fetch streams from all sources
                 if (currentMatch.sources && currentMatch.sources.length > 0) {
@@ -372,6 +382,11 @@
         function selectServer(index) {
             selectedServerIndex = index;
             
+            // Track server change in GA
+            if (window.GATracking && currentMatch) {
+                window.GATracking.trackServerChange(index + 1, currentMatch.id);
+            }
+            
             // Update button styles
             const buttons = document.getElementById('server-buttons').children;
             for (let i = 0; i < buttons.length; i++) {
@@ -418,6 +433,11 @@
         // Fullscreen detection - trigger popunders when user goes fullscreen
         function triggerFullscreenAd() {
             console.log('🎯 Fullscreen detected - triggering popunder');
+            
+            // Track fullscreen in GA
+            if (window.GATracking && currentMatch) {
+                window.GATracking.trackFullscreen(currentMatch.id);
+            }
             // Dispatch click event to trigger intellipopup
             try {
                 const clickEvent = new MouseEvent('click', {

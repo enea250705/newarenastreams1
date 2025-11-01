@@ -78,6 +78,11 @@ class MatchSearch {
                    title.includes(trimmedQuery);
         }).slice(0, 10); // Limit to 10 results
         
+        // Track search in Google Analytics (after results are calculated)
+        if (window.GATracking) {
+            window.GATracking.trackSearch(trimmedQuery, this.searchResults.length);
+        }
+        
         this.displayResults(resultsId);
     }
     
