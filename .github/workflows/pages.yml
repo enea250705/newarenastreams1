@@ -1,9 +1,9 @@
-name: GitHub Pages
+name: Deploy Static HTML Site
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,23 +15,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build-and-deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
-      - name: Copy public to root
+      - name: Prepare static files
         run: |
+          # Create output directory
           mkdir -p _site
+          # Copy all files from public to _site
           cp -r public/* _site/
-          cp public/.nojekyll _site/.nojekyll 2>/dev/null || touch _site/.nojekyll
+          # Ensure .nojekyll exists to disable Jekyll
+          touch _site/.nojekyll
+          echo "Files prepared for deployment"
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
