@@ -1,7 +1,10 @@
 {
   "version": 2,
-  "buildCommand": null,
+  "buildCommand": "",
+  "installCommand": "",
   "outputDirectory": "public",
+  "framework": null,
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD .",
   "rewrites": [
     {
       "source": "/(.*)",
