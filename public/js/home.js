@@ -51,10 +51,16 @@ async function loadMatches() {
             !m.isLive && m.homeBadge && m.awayBadge && m.awayTeam
         ).slice(0, 6);
         
-        // Update stats
-        const totalViewers = Math.floor(Math.random() * 100000) + 50000;
-        document.getElementById('live-count').textContent = `${liveWithBadges.length} Live Matches`;
-        document.getElementById('viewer-count').textContent = `${totalViewers.toLocaleString()}+ Viewers`;
+        // Update stats (only if elements exist - for homepage only)
+        const liveCountEl = document.getElementById('live-count');
+        const viewerCountEl = document.getElementById('viewer-count');
+        if (liveCountEl) {
+            liveCountEl.textContent = `${liveWithBadges.length} Live Matches`;
+        }
+        if (viewerCountEl) {
+            const totalViewers = Math.floor(Math.random() * 100000) + 50000;
+            viewerCountEl.textContent = `${totalViewers.toLocaleString()}+ Viewers`;
+        }
         
         // Display live matches
         if (liveWithBadges.length > 0) {

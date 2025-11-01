@@ -5,32 +5,31 @@
     
     console.log('🎯 Ad Script Loaded - Popunders on almost every click');
     
+    // Wait for intellipopup to load first
+    let intellipopupReady = false;
+    const checkIntellipopup = setInterval(() => {
+        // Check if intellipopup is loaded (it creates a global variable)
+        if (window.be2de7f311569f44731dcfebc7245428 || window.intellipopup) {
+            intellipopupReady = true;
+            clearInterval(checkIntellipopup);
+            console.log('✅ Intellipopup detected');
+        }
+    }, 100);
+    
+    // Stop checking after 10 seconds
+    setTimeout(() => {
+        clearInterval(checkIntellipopup);
+        if (!intellipopupReady) {
+            console.log('⚠ Intellipopup not detected, but continuing...');
+        }
+    }, 10000);
+    
     // Track clicks to prevent duplicate triggers
     let lastClickTime = 0;
-    const MIN_DELAY = 100; // 0.1 seconds between triggers (extremely fast - almost every click!)
-    
-    // Function to ensure click is captured by intellipopup
-    function ensureClickCaptured() {
-        try {
-            // Dispatch a click event to help intellipopup detect it
-            // This ensures the click bubbles and intellipopup can capture it
-            const clickEvent = new MouseEvent('click', {
-                bubbles: true,
-                cancelable: true,
-                view: window,
-                button: 0
-            });
-            
-            // Dispatch on document body so intellipopup can catch it
-            document.body.dispatchEvent(clickEvent);
-            
-            console.log('✅ Click event dispatched - intellipopup should trigger popunder');
-        } catch (error) {
-            console.log('Ad trigger error:', error);
-        }
-    }
+    const MIN_DELAY = 50; // Very short delay - almost every click
     
     // Capture ALL clicks on the page (capture phase = catches everything)
+    // Let real clicks bubble naturally - intellipopup should catch them
     document.addEventListener('click', function(e) {
         const now = Date.now();
         
@@ -38,19 +37,51 @@
         if (now - lastClickTime >= MIN_DELAY) {
             lastClickTime = now;
             
-            // Trigger popunder detection after a tiny delay
-            setTimeout(() => {
-                ensureClickCaptured();
-            }, 50);
+            // Real user clicks should automatically trigger intellipopup
+            // Just ensure the event bubbles properly
+            if (!e.isTrusted) {
+                // For non-user clicks, try to help
+                try {
+                    // Ensure event bubbles
+                    if (!e.bubbles) {
+                        e.stopImmediatePropagation = function() {};
+                    }
+                } catch (err) {
+                    // Ignore errors
+                }
+            }
+            
+            console.log('✅ Real click detected - intellipopup should trigger popunder');
         }
-    }, true); // Capture phase = catches ALL clicks
+    }, true); // Capture phase = catches ALL clicks BEFORE other handlers
     
-    // Also trigger once on page load
+    // Also try to trigger on page load after intellipopup is ready
     setTimeout(() => {
-        ensureClickCaptured();
-    }, 1500);
+        if (intellipopupReady) {
+            // Try to simulate a click that intellipopup might catch
+            try {
+                // Create a more realistic event
+                const clickEvent = new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    button: 0,
+                    clientX: 100,
+                    clientY: 100
+                });
+                
+                // Dispatch on a visible element
+                if (document.body) {
+                    document.body.dispatchEvent(clickEvent);
+                    console.log('✅ Page load click event dispatched');
+                }
+            } catch (error) {
+                console.log('Page load ad trigger:', error);
+            }
+        }
+    }, 2000);
     
-    console.log('✅ Popunder triggers active - clicks every 0.3 seconds minimum');
+    console.log('✅ Popunder triggers active - real clicks will trigger popunders');
     
 })();
 
