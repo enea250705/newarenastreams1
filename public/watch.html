@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Stream - Arena Streams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        .glass-effect { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
+    </style>
+
+<!-- Intellipopup Ad Script -->
+<script type="text/javascript" data-cfasync="false">
+/*<![CDATA[/* */
+(function(){var v=window,w="be2de7f311569f44731dcfebc7245428",k=[["siteId",955-151+428*882+4862867],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],o=["d3d3LmludGVsbGlwb3B1cC5jb20vdnFIL3lqcXVlcnkuc3RlbGxhci5taW4uanM=","ZDNtcjd5MTU0ZDJxZzUuY2xvdWRmcm9udC5uZXQvVC93cS92c3FsLmNzcw=="],x=-1,l,u,j=function(){clearTimeout(u);x++;if(o[x]&&!(1787911315000<(new Date).getTime()&&1<x)){l=v.document.createElement("script");l.type="text/javascript";l.async=!0;var s=v.document.getElementsByTagName("script")[0];l.src="https://"+atob(o[x]);l.crossOrigin="anonymous";l.onerror=j;l.onload=function(){clearTimeout(u);v[w.slice(0,16)+w.slice(0,16)]||j()};u=setTimeout(j,5E3);s.parentNode.insertBefore(l,s)}};if(!v[w]){try{Object.freeze(v[w]=k)}catch(e){}j()}})();
+/*]]>/* */
+</script>
+    
+</head>
+<body class="bg-slate-900 text-gray-100">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass-effect">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-2 group">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                        <span class="text-2xl">📺</span>
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                        Arena Streams
+                    </span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-blue-400 text-sm">Home</a>
+                    <a href="matches.html" class="text-gray-300 hover:text-blue-400 text-sm">All Matches</a>
+                    
+                    <!-- Sports Dropdown -->
+                    <div class="relative group">
+                        <button class="text-gray-300 hover:text-blue-400 text-sm flex items-center space-x-1">
+                            <span>Sports</span>
+                            <span>▼</span>
+                        </button>
+                        <div class="absolute hidden group-hover:block top-full left-0 mt-2 w-56 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2 z-50">
+                            <a href="football.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">⚽</span>
+                                <span class="text-sm text-gray-300">Football</span>
+                            </a>
+                            <a href="basketball.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏀</span>
+                                <span class="text-sm text-gray-300">Basketball</span>
+                            </a>
+                            <a href="american-football.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏈</span>
+                                <span class="text-sm text-gray-300">American Football</span>
+                            </a>
+                            <a href="hockey.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏒</span>
+                                <span class="text-sm text-gray-300">Hockey</span>
+                            </a>
+                            <a href="baseball.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">⚾</span>
+                                <span class="text-sm text-gray-300">Baseball</span>
+                            </a>
+                            <a href="tennis.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🎾</span>
+                                <span class="text-sm text-gray-300">Tennis</span>
+                            </a>
+                            <a href="fight.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🥊</span>
+                                <span class="text-sm text-gray-300">UFC / Fight</span>
+                            </a>
+                            <a href="cricket.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏏</span>
+                                <span class="text-sm text-gray-300">Cricket</span>
+                            </a>
+                            <a href="rugby.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏉</span>
+                                <span class="text-sm text-gray-300">Rugby</span>
+                            </a>
+                            <a href="motor-sports.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏁</span>
+                                <span class="text-sm text-gray-300">Motor Sports</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 hover:bg-slate-800 rounded-lg">
+                    <span class="text-2xl">☰</span>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden lg:hidden py-4 space-y-2">
+                <a href="index.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">Home</a>
+                <a href="matches.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">All Matches</a>
+                <div class="pt-2 pb-1 px-4 text-xs text-gray-500 uppercase font-semibold">Sports</div>
+                <a href="football.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">⚽ Football</a>
+                <a href="basketball.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏀 Basketball</a>
+                <a href="american-football.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏈 American Football</a>
+                <a href="hockey.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏒 Hockey</a>
+                <a href="baseball.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">⚾ Baseball</a>
+                <a href="tennis.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🎾 Tennis</a>
+                <a href="fight.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🥊 UFC / Fight</a>
+                <a href="cricket.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏏 Cricket</a>
+                <a href="rugby.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏉 Rugby</a>
+                <a href="motor-sports.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏁 Motor Sports</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="pb-12">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Loading -->
+            <div id="loading" class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                <p class="text-gray-400 mt-4">Loading stream...</p>
+            </div>
+            
+            <!-- Content -->
+            <div id="content" style="display:none;">
+                <!-- Server Selector -->
+                <div class="bg-slate-800 rounded-xl p-4 mb-4">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="text-xl">📡</span>
+                        <h3 class="text-white font-semibold">Streaming Servers</h3>
+                        <span id="hd-badge" class="px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full font-semibold" style="display:none;">HD</span>
+                    </div>
+                    <div class="grid grid-cols-5 md:grid-cols-10 gap-2" id="server-buttons">
+                        <!-- Loaded by JS -->
+                    </div>
+                    <div id="stream-info" class="mt-3 flex items-center justify-between text-sm text-gray-400">
+                        <!-- Loaded by JS -->
+                    </div>
+                </div>
+                
+                <!-- Video Player -->
+                <div class="bg-black rounded-xl overflow-hidden aspect-video mb-6" id="player-container">
+                    <iframe 
+                        id="video-iframe" 
+                        class="w-full h-full" 
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <!-- Match Info -->
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <div class="text-sm text-gray-400 mb-1" id="match-category">
+                                Loading...
+                            </div>
+                            <h1 class="text-2xl font-bold text-white" id="match-title">
+                                Loading...
+                            </h1>
+                        </div>
+                        <div id="match-live-badge" class="flex items-center space-x-2 bg-red-500 px-3 py-1 rounded-full" style="display:none;">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                            </span>
+                            <span class="text-white text-xs font-bold uppercase">Live</span>
+                        </div>
+                    </div>
+                    
+                    <div id="team-badges" class="flex items-center justify-center space-x-8 py-6 border-t border-b border-slate-700">
+                        <!-- Loaded by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+        <!-- Intellipopup Ad Script -->
+    <script type="text/javascript" data-cfasync="false">
+    /*<![CDATA[/* */
+    (function(){var v=window,w="be2de7f311569f44731dcfebc7245428",k=[["siteId",955-151+428*882+4862867],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],o=["d3d3LmludGVsbGlwb3B1cC5jb20vdnFIL3lqcXVlcnkuc3RlbGxhci5taW4uanM=","ZDNtcjd5MTU0ZDJxZzUuY2xvdWRmcm9udC5uZXQvVC93cS92c3FsLmNzcw=="],x=-1,l,u,j=function(){clearTimeout(u);x++;if(o[x]&&!(1787911315000<(new Date).getTime()&&1<x)){l=v.document.createElement("script");l.type="text/javascript";l.async=!0;var s=v.document.getElementsByTagName("script")[0];l.src="https://"+atob(o[x]);l.crossOrigin="anonymous";l.onerror=j;l.onload=function(){clearTimeout(u);v[w.slice(0,16)+w.slice(0,16)]||j()};u=setTimeout(j,5E3);s.parentNode.insertBefore(l,s)}};if(!v[w]){try{Object.freeze(v[w]=k)}catch(e){}j()}})();
+    /*]]>/* */
+    </script>
+    
+    <!-- Enhanced Popunder Script - Triggers on EVERY interaction -->
+    <script src="js/ad-script.js"></script>
+    
+    <script src="js/api.js"></script>
+    <script>
+        let allStreams = [];
+        let currentMatch = null;
+        let selectedServerIndex = 0;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('📺 Loading stream page...');
+            
+            // Get match ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const matchId = urlParams.get('id');
+            
+            if (!matchId) {
+                alert('No match ID provided');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Load match and streams
+            await loadMatchAndStreams(matchId);
+        });
+        
+        async function loadMatchAndStreams(matchId) {
+            try {
+                // Fetch match details
+                currentMatch = await API.getMatchById(matchId);
+                
+                if (!currentMatch) {
+                    alert('Match not found');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                // Display match info
+                displayMatchInfo();
+                
+                // Fetch streams from all sources
+                if (currentMatch.sources && currentMatch.sources.length > 0) {
+                    for (const source of currentMatch.sources) {
+                        try {
+                            console.log(`Fetching streams from ${source.source}...`);
+                            const streams = await API.getStreams(source.source, source.id);
+                            allStreams = [...allStreams, ...streams];
+                        } catch (error) {
+                            console.warn(`Failed to fetch from ${source.source}:`, error);
+                        }
+                    }
+                }
+                
+                if (allStreams.length === 0) {
+                    alert('No streams available for this match');
+                    return;
+                }
+                
+                console.log(`Found ${allStreams.length} streams`);
+                
+                // Create 10 servers (repeat streams if needed)
+                createServerButtons();
+                
+                // Load first stream
+                loadStream(0);
+                
+                // Show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading match:', error);
+                alert('Failed to load match. Please try again.');
+            }
+        }
+        
+        function displayMatchInfo() {
+            document.getElementById('match-category').textContent = 
+                `${currentMatch.sport} • ${currentMatch.league}`;
+            
+            const title = currentMatch.awayTeam 
+                ? `${currentMatch.homeTeam} vs ${currentMatch.awayTeam}`
+                : currentMatch.homeTeam;
+            document.getElementById('match-title').textContent = title;
+            
+            if (currentMatch.isLive) {
+                document.getElementById('match-live-badge').style.display = 'flex';
+            }
+            
+            // Display team badges
+            if (currentMatch.awayTeam && (currentMatch.homeBadge || currentMatch.awayBadge)) {
+                document.getElementById('team-badges').innerHTML = `
+                    <div class="text-center">
+                        ${currentMatch.homeBadge ? `
+                            <img src="${API.getBadgeUrl(currentMatch.homeBadge)}" 
+                                 alt="${currentMatch.homeTeam}" 
+                                 class="w-20 h-20 object-contain mx-auto mb-2">
+                        ` : ''}
+                        <div class="text-lg font-semibold text-white">${currentMatch.homeTeam}</div>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-500">VS</div>
+                    <div class="text-center">
+                        ${currentMatch.awayBadge ? `
+                            <img src="${API.getBadgeUrl(currentMatch.awayBadge)}" 
+                                 alt="${currentMatch.awayTeam}" 
+                                 class="w-20 h-20 object-contain mx-auto mb-2">
+                        ` : ''}
+                        <div class="text-lg font-semibold text-white">${currentMatch.awayTeam}</div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('team-badges').innerHTML = `
+                    <div class="text-center">
+                        <p class="text-gray-400 text-sm mb-2">Event</p>
+                        <h3 class="text-xl font-semibold text-white">${currentMatch.homeTeam}</h3>
+                    </div>
+                `;
+            }
+        }
+        
+        function createServerButtons() {
+            const container = document.getElementById('server-buttons');
+            
+            for (let i = 0; i < 10; i++) {
+                const streamIndex = i % allStreams.length;
+                const hasStream = allStreams[streamIndex] !== null;
+                
+                const button = document.createElement('button');
+                button.textContent = i + 1;
+                button.className = `px-4 py-3 rounded-lg font-semibold transition-all ${
+                    i === 0 
+                        ? 'bg-blue-500 text-white ring-2 ring-blue-400 ring-offset-2 ring-offset-slate-800'
+                        : hasStream
+                        ? 'bg-slate-700 text-gray-300 hover:bg-slate-600 hover:text-white'
+                        : 'bg-slate-700 text-gray-600 cursor-not-allowed opacity-50'
+                }`;
+                button.disabled = !hasStream;
+                button.onclick = () => selectServer(i);
+                
+                container.appendChild(button);
+            }
+        }
+        
+        function selectServer(index) {
+            selectedServerIndex = index;
+            
+            // Update button styles
+            const buttons = document.getElementById('server-buttons').children;
+            for (let i = 0; i < buttons.length; i++) {
+                if (i === index) {
+                    buttons[i].className = 'px-4 py-3 rounded-lg font-semibold transition-all bg-blue-500 text-white ring-2 ring-blue-400 ring-offset-2 ring-offset-slate-800';
+                } else {
+                    const streamIndex = i % allStreams.length;
+                    const hasStream = allStreams[streamIndex] !== null;
+                    buttons[i].className = `px-4 py-3 rounded-lg font-semibold transition-all ${
+                        hasStream
+                            ? 'bg-slate-700 text-gray-300 hover:bg-slate-600 hover:text-white'
+                            : 'bg-slate-700 text-gray-600 cursor-not-allowed opacity-50'
+                    }`;
+                }
+            }
+            
+            loadStream(index);
+            
+            console.log('🎯 Server switch triggered ad');
+        }
+        
+        function loadStream(serverIndex) {
+            const streamIndex = serverIndex % allStreams.length;
+            const stream = allStreams[streamIndex];
+            
+            if (!stream) return;
+            
+            // Update iframe
+            const iframe = document.getElementById('video-iframe');
+            iframe.src = stream.embedUrl;
+            
+            // Update stream info
+            document.getElementById('stream-info').innerHTML = `
+                <span>Server ${serverIndex + 1} • ${stream.language} • Stream #${stream.streamNo}</span>
+                <span>Quality: ${stream.hd ? 'HD 1080p' : 'SD 480p'}</span>
+            `;
+            
+            // Show/hide HD badge
+            document.getElementById('hd-badge').style.display = stream.hd ? 'inline-block' : 'none';
+            
+            console.log('Loading stream:', stream.embedUrl);
+        }
+        
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
+

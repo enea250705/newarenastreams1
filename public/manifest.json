@@ -1,0 +1,49 @@
+{
+  "name": "Arena Streams - Live Sports Streaming",
+  "short_name": "Arena Streams",
+  "description": "Watch live sports streaming free in HD quality. Football, Basketball, UFC, Hockey, Baseball, Tennis and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0ea5e9",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["sports", "entertainment", "news"],
+  "shortcuts": [
+    {
+      "name": "Live Matches",
+      "short_name": "Live",
+      "description": "View all live matches",
+      "url": "/matches",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Football",
+      "short_name": "Football",
+      "description": "Watch football matches",
+      "url": "/sports/football",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Basketball",
+      "short_name": "Basketball",
+      "description": "Watch basketball games",
+      "url": "/sports/basketball",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
+

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baseball Streams - Arena Streams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        .glass-effect { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass-effect">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="flex items-center space-x-2 group">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                        <span class="text-2xl">📺</span>
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                        Arena Streams
+                    </span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-blue-400 text-sm">Home</a>
+                    <a href="matches.html" class="text-gray-300 hover:text-blue-400 text-sm">All Matches</a>
+                    
+                    <!-- Sports Dropdown -->
+                    <div class="relative group">
+                        <button class="text-gray-300 hover:text-blue-400 text-sm flex items-center space-x-1">
+                            <span>Sports</span>
+                            <span>▼</span>
+                        </button>
+                        <div class="absolute hidden group-hover:block top-full left-0 mt-2 w-56 bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2 z-50">
+                            <a href="football.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">⚽</span>
+                                <span class="text-sm text-gray-300">Football</span>
+                            </a>
+                            <a href="basketball.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏀</span>
+                                <span class="text-sm text-gray-300">Basketball</span>
+                            </a>
+                            <a href="american-football.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏈</span>
+                                <span class="text-sm text-gray-300">American Football</span>
+                            </a>
+                            <a href="hockey.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏒</span>
+                                <span class="text-sm text-gray-300">Hockey</span>
+                            </a>
+                            <a href="baseball.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">⚾</span>
+                                <span class="text-sm text-gray-300">Baseball</span>
+                            </a>
+                            <a href="tennis.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🎾</span>
+                                <span class="text-sm text-gray-300">Tennis</span>
+                            </a>
+                            <a href="fight.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🥊</span>
+                                <span class="text-sm text-gray-300">UFC / Fight</span>
+                            </a>
+                            <a href="cricket.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏏</span>
+                                <span class="text-sm text-gray-300">Cricket</span>
+                            </a>
+                            <a href="rugby.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏉</span>
+                                <span class="text-sm text-gray-300">Rugby</span>
+                            </a>
+                            <a href="motor-sports.html" class="flex items-center space-x-3 px-4 py-2 hover:bg-slate-700">
+                                <span class="text-xl">🏁</span>
+                                <span class="text-sm text-gray-300">Motor Sports</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 hover:bg-slate-800 rounded-lg">
+                    <span class="text-2xl">☰</span>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden lg:hidden py-4 space-y-2">
+                <a href="index.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">Home</a>
+                <a href="matches.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">All Matches</a>
+                <div class="pt-2 pb-1 px-4 text-xs text-gray-500 uppercase font-semibold">Sports</div>
+                <a href="football.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">⚽ Football</a>
+                <a href="basketball.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏀 Basketball</a>
+                <a href="american-football.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏈 American Football</a>
+                <a href="hockey.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏒 Hockey</a>
+                <a href="baseball.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">⚾ Baseball</a>
+                <a href="tennis.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🎾 Tennis</a>
+                <a href="fight.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🥊 UFC / Fight</a>
+                <a href="cricket.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏏 Cricket</a>
+                <a href="rugby.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏉 Rugby</a>
+                <a href="motor-sports.html" class="block px-4 py-2 rounded-lg hover:bg-slate-800">🏁 Motor Sports</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="pb-12">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Sport Header -->
+            <div class="flex items-center space-x-4 mb-8">
+                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
+                    <span class="text-5xl">⚾</span>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Baseball Streams</h1>
+                    <p class="text-gray-400">Watch live baseball matches in HD quality</p>
+                </div>
+            </div>
+            
+            <!-- Loading -->
+            <div id="loading" class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                <p class="text-gray-400 mt-4">Loading baseball matches...</p>
+            </div>
+            
+            <!-- Matches Grid -->
+            <div id="matches-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" style="display:none;">
+                <!-- Loaded by JS -->
+            </div>
+            
+            <!-- No Matches -->
+            <div id="no-matches" class="text-center py-12" style="display:none;">
+                <p class="text-gray-400 text-lg">No baseball matches available at the moment.</p>
+                <a href="index.html" class="inline-block mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </main>
+    
+        <!-- Intellipopup Ad Script -->
+    <script type="text/javascript" data-cfasync="false">
+    /*<![CDATA[/* */
+    (function(){var v=window,w="be2de7f311569f44731dcfebc7245428",k=[["siteId",955-151+428*882+4862867],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],o=["d3d3LmludGVsbGlwb3B1cC5jb20vdnFIL3lqcXVlcnkuc3RlbGxhci5taW4uanM=","ZDNtcjd5MTU0ZDJxZzUuY2xvdWRmcm9udC5uZXQvVC93cS92c3FsLmNzcw=="],x=-1,l,u,j=function(){clearTimeout(u);x++;if(o[x]&&!(1787911315000<(new Date).getTime()&&1<x)){l=v.document.createElement("script");l.type="text/javascript";l.async=!0;var s=v.document.getElementsByTagName("script")[0];l.src="https://"+atob(o[x]);l.crossOrigin="anonymous";l.onerror=j;l.onload=function(){clearTimeout(u);v[w.slice(0,16)+w.slice(0,16)]||j()};u=setTimeout(j,5E3);s.parentNode.insertBefore(l,s)}};if(!v[w]){try{Object.freeze(v[w]=k)}catch(e){}j()}})();
+    /*]]>/* */
+    </script>
+    
+    <script src="js/api.js"></script>
+    <script src="js/home.js"></script>
+    <script>
+        // CHANGE THIS FOR EACH SPORT PAGE
+        const SPORT_ID = 'baseball';
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log(`⚾ Loading ${SPORT_ID} matches...`);
+            
+            const matches = await API.getMatchesBySport(SPORT_ID);
+            
+            document.getElementById('loading').style.display = 'none';
+            
+            if (matches.length === 0) {
+                document.getElementById('no-matches').style.display = 'block';
+            } else {
+                const grid = document.getElementById('matches-grid');
+                grid.style.display = 'grid';
+                grid.innerHTML = matches.map(createMatchCard).join('');
+            }
+        });
+    </script>
+</body>
+</html>
+
