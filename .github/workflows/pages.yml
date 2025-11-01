@@ -1,9 +1,9 @@
-name: Deploy HTML Site
+name: GitHub Pages
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -27,16 +27,16 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
-      - name: Copy public folder to root
+      - name: Copy public to root
         run: |
-          cp -r public/* .
-          # Keep .nojekyll file
-          touch .nojekyll
+          mkdir -p _site
+          cp -r public/* _site/
+          cp public/.nojekyll _site/.nojekyll 2>/dev/null || touch _site/.nojekyll
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
       
       - name: Deploy to GitHub Pages
         id: deployment
