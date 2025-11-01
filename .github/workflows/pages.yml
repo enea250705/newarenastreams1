@@ -23,18 +23,40 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
       - name: Prepare static files
         run: |
+          # Verify public directory exists
+          if [ ! -d "public" ]; then
+            echo "Error: public directory not found!"
+            exit 1
+          fi
+          
+          # List files to verify
+          echo "Files in public directory:"
+          ls -la public/ | head -20
+          
           # Create output directory
           mkdir -p _site
+          
           # Copy all files from public to _site
-          cp -r public/* _site/
+          cp -r public/* _site/ 2>&1 || {
+            echo "Error copying files"
+            exit 1
+          }
+          
           # Ensure .nojekyll exists to disable Jekyll
           touch _site/.nojekyll
+          
+          # Verify _site has files
+          echo "Files in _site directory:"
+          ls -la _site/ | head -20
+          
           echo "Files prepared for deployment"
       
       - name: Upload artifact
