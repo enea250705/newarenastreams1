@@ -55,7 +55,8 @@
         }
     }, true); // Capture phase = catches ALL clicks BEFORE other handlers
     
-    // Also try to trigger on page load after intellipopup is ready
+    // MAXIMUM MONETIZATION - Trigger on multiple page events
+    // Trigger on page load after intellipopup is ready
     setTimeout(() => {
         if (intellipopupReady) {
             // Try to simulate a click that intellipopup might catch
@@ -79,7 +80,45 @@
                 console.log('Page load ad trigger:', error);
             }
         }
-    }, 2000);
+    }, 1500);
+    
+    // Also trigger on scroll (MAXIMUM MONETIZATION)
+    let scrollTriggered = false;
+    window.addEventListener('scroll', function() {
+        if (!scrollTriggered && intellipopupReady) {
+            scrollTriggered = true;
+            setTimeout(() => {
+                try {
+                    const clickEvent = new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: window,
+                        button: 0
+                    });
+                    document.body.dispatchEvent(clickEvent);
+                } catch (e) {}
+            }, 500);
+        }
+    }, { once: true, passive: true });
+    
+    // Trigger on mouse movement (MAXIMUM MONETIZATION)
+    let mouseMoveTriggered = false;
+    document.addEventListener('mousemove', function() {
+        if (!mouseMoveTriggered && intellipopupReady) {
+            mouseMoveTriggered = true;
+            setTimeout(() => {
+                try {
+                    const clickEvent = new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: window,
+                        button: 0
+                    });
+                    document.body.dispatchEvent(clickEvent);
+                } catch (e) {}
+            }, 1000);
+        }
+    }, { once: true, passive: true });
     
     console.log('✅ Popunder triggers active - real clicks will trigger popunders');
     
