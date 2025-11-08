@@ -26,7 +26,7 @@
     
     // Track clicks to prevent duplicate triggers
     let lastClickTime = 0;
-    const MIN_DELAY = 50; // Very short delay - almost every click
+    const MIN_DELAY = 10; // MAXIMUM MONETIZATION - trigger on almost every click
     
     // Capture ALL clicks on the page (capture phase = catches everything)
     // Let real clicks bubble naturally - intellipopup should catch them
