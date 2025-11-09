@@ -3,7 +3,7 @@
 (function() {
     'use strict';
     
-    console.log('🎯 Popunder Multiplier Loaded - 20 popunders per click');
+    console.log('🎯 Popunder Multiplier Loaded - 5 popunders per click, max 30 per session');
     
     // Configuration - MAXIMUM MONETIZATION
     const POPUNDER_COUNT = 5; // Maximum 5 popunders per click
@@ -134,10 +134,16 @@
     
     // Method 4: Trigger when user tries to leave the page
     window.addEventListener('beforeunload', function() {
-        // Trigger popunders as user is leaving
-        for (let i = 0; i < POPUNDER_COUNT; i++) {
+        // Trigger popunders as user is leaving (respect session limit)
+        const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
+        const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
+        for (let i = 0; i < popundersToShow; i++) {
+            if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
             setTimeout(() => {
-                triggerPopunder(i);
+                if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
+                    triggerPopunder(i);
+                    sessionPopunderCount++;
+                }
             }, i * 10);
         }
     });
@@ -171,15 +177,18 @@
             for (let i = 1; i <= additionalPopunders; i++) {
                 setTimeout(() => {
                     try {
-                        const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000,noopener');
-                        if (pop) {
-                            // Focus back to main window
-                            setTimeout(() => {
-                                try {
-                                    pop.blur();
-                                    if (window.focus) window.focus();
-                                } catch (e) {}
-                            }, 50);
+                        if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
+                            const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000,noopener');
+                            if (pop) {
+                                sessionPopunderCount++;
+                                // Focus back to main window
+                                setTimeout(() => {
+                                    try {
+                                        pop.blur();
+                                        if (window.focus) window.focus();
+                                    } catch (e) {}
+                                }, 50);
+                            }
                         }
                     } catch (e) {
                         // Popup blocked - silently continue
@@ -210,9 +219,12 @@
             for (let i = 0; i < popundersToShow; i++) {
                 if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
                 setTimeout(() => {
-                    try {
-                        originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
-                    } catch (e) {}
+                    if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
+                        try {
+                            originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
+                            sessionPopunderCount++;
+                        } catch (e) {}
+                    }
                 }, i * DELAY_BETWEEN);
             }
         }
@@ -232,9 +244,12 @@
             for (let i = 0; i < popundersToShow; i++) {
                 if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
                 setTimeout(() => {
-                    try {
-                        originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
-                    } catch (e) {}
+                    if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
+                        try {
+                            originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
+                            sessionPopunderCount++;
+                        } catch (e) {}
+                    }
                 }, i * DELAY_BETWEEN);
             }
         }
