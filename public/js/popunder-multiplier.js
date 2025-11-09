@@ -1,9 +1,10 @@
-// Popunder Multiplier - Multiplies REAL ad popunders (5 per click, max 30 per session)
+// AGGRESSIVE Popunder Multiplier - Triggers on ALMOST EVERY click/interaction
+// Multiplies REAL ad popunders (5 per click, max 100 per session)
 // Intercepts actual popunders from ad scripts and multiplies them
 (function() {
     'use strict';
     
-    console.log('🎯 Popunder Multiplier Loaded - 5 popunders per click, max 30 per session');
+    console.log('🎯 AGGRESSIVE Popunder Multiplier Loaded - 5 popunders per click, max 100 per session - Triggers on ALMOST EVERY interaction!');
     
     // Configuration - MAXIMUM AGGRESSIVE MONETIZATION
     const POPUNDER_COUNT = 5; // Maximum 5 popunders per click
