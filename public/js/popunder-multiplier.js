@@ -5,10 +5,15 @@
     
     console.log('🎯 Popunder Multiplier Loaded - 20 popunders per click');
     
-    // Configuration
-    const POPUNDER_COUNT = 20;
-    const DELAY_BETWEEN = 50; // ms between each popunder
+    // Configuration - MAXIMUM MONETIZATION
+    const POPUNDER_COUNT = 5; // Maximum 5 popunders per click
+    const MAX_SESSION_POPUNDERS = 30; // Maximum 30 popunders per session
+    const DELAY_BETWEEN = 100; // ms between each popunder
     const MAIN_REDIRECT_DELAY = 100; // ms before main redirect (user sees this)
+    
+    // Track session popunders
+    let sessionPopunderCount = 0;
+    let sessionStartTime = Date.now();
     
     // Track if already triggered (prevent multiple triggers from same click)
     let triggered = false;
@@ -58,18 +63,33 @@
     
     // Function to trigger multiple popunders
     function triggerMultiplePopunders() {
+        // Check session limit
+        if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) {
+            console.log(`⚠️ Session limit reached: ${sessionPopunderCount}/${MAX_SESSION_POPUNDERS} popunders`);
+            return;
+        }
+        
         if (triggered) return;
         triggered = true;
         
-        console.log(`🚀 Triggering ${POPUNDER_COUNT} popunders...`);
+        // Calculate how many popunders we can still show
+        const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
+        const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
         
-        // Trigger the first one immediately (user sees this)
-        triggerPopunder(0);
+        if (popundersToShow <= 0) {
+            triggered = false;
+            return;
+        }
         
-        // Trigger the rest with small delays
-        for (let i = 1; i < POPUNDER_COUNT; i++) {
+        console.log(`🚀 Triggering ${popundersToShow} popunders (${sessionPopunderCount}/${MAX_SESSION_POPUNDERS} this session)...`);
+        
+        // Trigger popunders
+        for (let i = 0; i < popundersToShow; i++) {
             setTimeout(() => {
-                triggerPopunder(i);
+                if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
+                    triggerPopunder(i);
+                    sessionPopunderCount++;
+                }
             }, DELAY_BETWEEN * i);
         }
         
@@ -145,8 +165,10 @@
         if (url && !isFpyf8Ad && url !== 'about:blank' && url !== window.location.href && (now - lastOpenTime > 500)) {
             lastOpenTime = now;
             
-            // Trigger 19 more popunders with the same URL in background
-            for (let i = 1; i < POPUNDER_COUNT; i++) {
+            // Trigger additional popunders with the same URL in background (up to 5 total, 30 per session)
+            const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
+            const additionalPopunders = Math.min(POPUNDER_COUNT - 1, remaining);
+            for (let i = 1; i <= additionalPopunders; i++) {
                 setTimeout(() => {
                     try {
                         const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000,noopener');
@@ -182,8 +204,11 @@
         if (now - lastLocationTime > 500) {
             lastLocationTime = now;
             
-            // Before redirecting, open popunders
-            for (let i = 0; i < POPUNDER_COUNT; i++) {
+            // Before redirecting, open popunders (up to 5, max 30 per session)
+            const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
+            const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
+            for (let i = 0; i < popundersToShow; i++) {
+                if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
                 setTimeout(() => {
                     try {
                         originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
@@ -202,7 +227,10 @@
         if (now - lastLocationTime > 500) {
             lastLocationTime = now;
             
-            for (let i = 0; i < POPUNDER_COUNT; i++) {
+            const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
+            const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
+            for (let i = 0; i < popundersToShow; i++) {
+                if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
                 setTimeout(() => {
                     try {
                         originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
@@ -214,7 +242,7 @@
         return originalReplace.call(this, url);
     };
     
-    console.log('✅ Popunder Multiplier active - 20 popunders will trigger on clicks');
+    console.log(`✅ Popunder Multiplier active - ${POPUNDER_COUNT} popunders per click, max ${MAX_SESSION_POPUNDERS} per session`);
     
 })();
 
