@@ -1,5 +1,5 @@
-// Popunder Multiplier - Triggers 20 popunders on single click
-// User only sees one redirect, others open silently in background
+// Popunder Multiplier - Multiplies REAL ad popunders (5 per click, max 30 per session)
+// Intercepts actual popunders from ad scripts and multiplies them
 (function() {
     'use strict';
     
@@ -21,43 +21,27 @@
     // List of URLs for popunders (using placeholder for now - ad scripts will handle)
     // In practice, these would be managed by the ad network scripts
     
-    // Function to trigger a popunder
+    // Function to trigger a popunder by simulating a click that ad scripts will catch
+    // This doesn't create blank windows - it triggers the real ad scripts
     function triggerPopunder(index) {
         try {
-            // Use window.open with specific features to make it popunder-like
-            const popunder = window.open(
-                'about:blank',
-                '_blank',
-                'width=1,height=1,left=-1000,top=-1000,noopener,noreferrer'
-            );
+            // Create a synthetic click event that ad scripts will detect
+            // The ad scripts (effectivegatecpm, intellipopup) will handle the actual popunder
+            const clickEvent = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window,
+                button: 0,
+                clientX: Math.random() * window.innerWidth,
+                clientY: Math.random() * window.innerHeight
+            });
             
-            if (popunder) {
-                // Small delay then redirect to actual ad URL
-                setTimeout(() => {
-                    try {
-                        // The ad scripts will handle the actual redirect
-                        // This just opens the window
-                        popunder.blur();
-                        window.focus();
-                    } catch (e) {
-                        // Ignore errors
-                    }
-                }, 10);
-                
-                // Close after a moment (popunders usually auto-redirect)
-                setTimeout(() => {
-                    try {
-                        if (!popunder.closed) {
-                            popunder.close();
-                        }
-                    } catch (e) {
-                        // Ignore errors
-                    }
-                }, 1000);
+            // Dispatch on document body - ad scripts listen for clicks
+            if (document.body) {
+                document.body.dispatchEvent(clickEvent);
             }
         } catch (error) {
-            // Silently fail - popup blockers will prevent some
-            console.log('Popunder blocked:', index);
+            // Silently fail
         }
     }
     
@@ -148,7 +132,7 @@
         }
     });
     
-    // Method 5: Hook into window.open to multiply ALL redirects (except fpyf8 display ads)
+    // Method 5: Hook into window.open to multiply REAL popunders from ad scripts
     const originalOpen = window.open;
     let openCount = 0;
     let lastOpenTime = 0;
@@ -164,11 +148,19 @@
             document.querySelector('script[data-zone="182209"]')
         );
         
+        // Check if this is a real ad popunder (from effectivegatecpm, intellipopup, etc.)
+        const isAdPopunder = url && (
+            url.includes('effectivegatecpm.com') ||
+            url.includes('popunder') ||
+            url.includes('redirect') ||
+            (url !== 'about:blank' && url !== window.location.href && !url.startsWith('javascript:'))
+        );
+        
         // Let the first open go through (user sees this)
         const result = originalOpen.call(this, url, target, features);
         
-        // If this is from a real redirect, NOT fpyf8, and enough time has passed, multiply it
-        if (url && !isFpyf8Ad && url !== 'about:blank' && url !== window.location.href && (now - lastOpenTime > 500)) {
+        // If this is a REAL ad popunder, NOT fpyf8, and enough time has passed, multiply it
+        if (isAdPopunder && !isFpyf8Ad && (now - lastOpenTime > 500)) {
             lastOpenTime = now;
             
             // Trigger additional popunders with the same URL in background (up to 5 total, 30 per session)
@@ -181,7 +173,7 @@
                             const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000,noopener');
                             if (pop) {
                                 sessionPopunderCount++;
-                                // Focus back to main window
+                                // Focus back to main window (make it a popunder)
                                 setTimeout(() => {
                                     try {
                                         pop.blur();
@@ -200,7 +192,7 @@
         return result;
     };
     
-    // Method 6: Also hook location changes
+    // Method 6: Also hook location changes (for ad redirects)
     const originalAssign = window.location.assign;
     const originalReplace = window.location.replace;
     let locationChangeCount = 0;
@@ -210,7 +202,14 @@
         const now = Date.now();
         locationChangeCount++;
         
-        if (now - lastLocationTime > 500) {
+        // Check if this is an ad redirect
+        const isAdRedirect = url && (
+            url.includes('effectivegatecpm.com') ||
+            url.includes('popunder') ||
+            url.includes('redirect')
+        );
+        
+        if (isAdRedirect && now - lastLocationTime > 500) {
             lastLocationTime = now;
             
             // Before redirecting, open popunders (up to 5, max 30 per session)
@@ -221,8 +220,16 @@
                 setTimeout(() => {
                     if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
                         try {
-                            originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
-                            sessionPopunderCount++;
+                            const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
+                            if (pop) {
+                                sessionPopunderCount++;
+                                setTimeout(() => {
+                                    try {
+                                        pop.blur();
+                                        if (window.focus) window.focus();
+                                    } catch (e) {}
+                                }, 50);
+                            }
                         } catch (e) {}
                     }
                 }, i * DELAY_BETWEEN);
@@ -236,7 +243,14 @@
         const now = Date.now();
         locationChangeCount++;
         
-        if (now - lastLocationTime > 500) {
+        // Check if this is an ad redirect
+        const isAdRedirect = url && (
+            url.includes('effectivegatecpm.com') ||
+            url.includes('popunder') ||
+            url.includes('redirect')
+        );
+        
+        if (isAdRedirect && now - lastLocationTime > 500) {
             lastLocationTime = now;
             
             const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
@@ -246,8 +260,16 @@
                 setTimeout(() => {
                     if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
                         try {
-                            originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
-                            sessionPopunderCount++;
+                            const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
+                            if (pop) {
+                                sessionPopunderCount++;
+                                setTimeout(() => {
+                                    try {
+                                        pop.blur();
+                                        if (window.focus) window.focus();
+                                    } catch (e) {}
+                                }, 50);
+                            }
                         } catch (e) {}
                     }
                 }, i * DELAY_BETWEEN);
