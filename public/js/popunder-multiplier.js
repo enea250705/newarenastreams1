@@ -5,18 +5,19 @@
     
     console.log('🎯 Popunder Multiplier Loaded - 5 popunders per click, max 30 per session');
     
-    // Configuration - MAXIMUM MONETIZATION
+    // Configuration - MAXIMUM AGGRESSIVE MONETIZATION
     const POPUNDER_COUNT = 5; // Maximum 5 popunders per click
-    const MAX_SESSION_POPUNDERS = 30; // Maximum 30 popunders per session
-    const DELAY_BETWEEN = 100; // ms between each popunder
-    const MAIN_REDIRECT_DELAY = 100; // ms before main redirect (user sees this)
+    const MAX_SESSION_POPUNDERS = 100; // Increased to 100 popunders per session
+    const DELAY_BETWEEN = 50; // Reduced delay - faster popunders
+    const MAIN_REDIRECT_DELAY = 10; // Very fast - almost instant
+    const CLICK_COOLDOWN = 100; // Reduced cooldown - allow more frequent triggers
     
     // Track session popunders
     let sessionPopunderCount = 0;
     let sessionStartTime = Date.now();
     
-    // Track if already triggered (prevent multiple triggers from same click)
-    let triggered = false;
+    // Track last trigger time (allow more frequent triggers)
+    let lastTriggerTime = 0;
     
     // List of URLs for popunders (using placeholder for now - ad scripts will handle)
     // In practice, these would be managed by the ad network scripts
@@ -45,29 +46,31 @@
         }
     }
     
-    // Function to trigger multiple popunders
+    // Function to trigger multiple popunders - VERY AGGRESSIVE
     function triggerMultiplePopunders() {
+        const now = Date.now();
+        
         // Check session limit
         if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) {
-            console.log(`⚠️ Session limit reached: ${sessionPopunderCount}/${MAX_SESSION_POPUNDERS} popunders`);
+            return; // Silent return - no logging
+        }
+        
+        // Very short cooldown - allow almost every click
+        if (now - lastTriggerTime < CLICK_COOLDOWN) {
             return;
         }
         
-        if (triggered) return;
-        triggered = true;
+        lastTriggerTime = now;
         
         // Calculate how many popunders we can still show
         const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
         const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
         
         if (popundersToShow <= 0) {
-            triggered = false;
             return;
         }
         
-        console.log(`🚀 Triggering ${popundersToShow} popunders (${sessionPopunderCount}/${MAX_SESSION_POPUNDERS} this session)...`);
-        
-        // Trigger popunders
+        // Trigger popunders immediately and aggressively
         for (let i = 0; i < popundersToShow; i++) {
             setTimeout(() => {
                 if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
@@ -76,59 +79,72 @@
                 }
             }, DELAY_BETWEEN * i);
         }
-        
-        // Reset triggered flag after a short delay (allow new clicks)
-        setTimeout(() => {
-            triggered = false;
-        }, 2000);
     }
     
-    // Method 1: Intercept ALL clicks on the page
+    // Method 1: Intercept ALL clicks on the page - VERY AGGRESSIVE
     document.addEventListener('click', function(e) {
-        // Only trigger on actual user clicks (trusted events)
-        if (e.isTrusted) {
-            // Small delay to let the original click action happen first
-            setTimeout(() => {
-                triggerMultiplePopunders();
-            }, MAIN_REDIRECT_DELAY);
-        }
-    }, true); // Use capture phase to catch ALL clicks
+        // Trigger on ALL clicks (trusted or not - maximum coverage)
+        setTimeout(() => {
+            triggerMultiplePopunders();
+        }, MAIN_REDIRECT_DELAY);
+    }, true); // Use capture phase to catch ALL clicks BEFORE other handlers
     
-    // Method 2: Also trigger on common user interactions
-    const interactions = ['mousedown', 'touchstart', 'keydown'];
+    // Method 2: Trigger on ALL user interactions - VERY AGGRESSIVE
+    const interactions = ['mousedown', 'mouseup', 'touchstart', 'touchend', 'keydown', 'keyup', 'focus', 'blur'];
     interactions.forEach(eventType => {
         document.addEventListener(eventType, function(e) {
-            if (e.isTrusted) {
-                setTimeout(() => {
-                    triggerMultiplePopunders();
-                }, MAIN_REDIRECT_DELAY + 50);
-            }
-        }, true);
-    });
-    
-    // Method 3: Trigger on page visibility change (when user switches tabs)
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            // User switched tabs - good time for popunders
+            // Trigger on ALL interactions - no isTrusted check
             setTimeout(() => {
                 triggerMultiplePopunders();
-            }, 200);
+            }, MAIN_REDIRECT_DELAY + 10);
+        }, true); // Capture phase - catch everything
+    });
+    
+    // Method 3: Trigger on page visibility change and focus - VERY AGGRESSIVE
+    document.addEventListener('visibilitychange', function() {
+        // Trigger on BOTH hidden and visible
+        setTimeout(() => {
+            triggerMultiplePopunders();
+        }, 50);
+    });
+    
+    // Also trigger on window focus/blur
+    window.addEventListener('focus', function() {
+        setTimeout(() => {
+            triggerMultiplePopunders();
+        }, 50);
+    });
+    
+    window.addEventListener('blur', function() {
+        setTimeout(() => {
+            triggerMultiplePopunders();
+        }, 50);
+    });
+    
+    // Method 4: Trigger when user tries to leave the page - VERY AGGRESSIVE
+    window.addEventListener('beforeunload', function() {
+        // Trigger maximum popunders on exit
+        const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
+        const popundersToShow = Math.min(POPUNDER_COUNT * 2, remaining); // Double on exit
+        for (let i = 0; i < popundersToShow; i++) {
+            if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
+            try {
+                triggerPopunder(i);
+                sessionPopunderCount++;
+            } catch (e) {}
         }
     });
     
-    // Method 4: Trigger when user tries to leave the page
-    window.addEventListener('beforeunload', function() {
-        // Trigger popunders as user is leaving (respect session limit)
+    // Also trigger on page unload
+    window.addEventListener('unload', function() {
         const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
         const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
         for (let i = 0; i < popundersToShow; i++) {
             if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
-            setTimeout(() => {
-                if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
-                    triggerPopunder(i);
-                    sessionPopunderCount++;
-                }
-            }, i * 10);
+            try {
+                triggerPopunder(i);
+                sessionPopunderCount++;
+            } catch (e) {}
         }
     });
     
@@ -159,8 +175,8 @@
         // Let the first open go through (user sees this)
         const result = originalOpen.call(this, url, target, features);
         
-        // If this is a REAL ad popunder, NOT fpyf8, and enough time has passed, multiply it
-        if (isAdPopunder && !isFpyf8Ad && (now - lastOpenTime > 500)) {
+        // If this is a REAL ad popunder, NOT fpyf8, multiply it aggressively
+        if (isAdPopunder && !isFpyf8Ad && (now - lastOpenTime > 100)) {
             lastOpenTime = now;
             
             // Trigger additional popunders with the same URL in background (up to 5 total, 30 per session)
@@ -209,7 +225,7 @@
             url.includes('redirect')
         );
         
-        if (isAdRedirect && now - lastLocationTime > 500) {
+        if (isAdRedirect && now - lastLocationTime > 100) {
             lastLocationTime = now;
             
             // Before redirecting, open popunders (up to 5, max 30 per session)
@@ -250,7 +266,7 @@
             url.includes('redirect')
         );
         
-        if (isAdRedirect && now - lastLocationTime > 500) {
+        if (isAdRedirect && now - lastLocationTime > 100) {
             lastLocationTime = now;
             
             const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
@@ -279,7 +295,7 @@
         return originalReplace.call(this, url);
     };
     
-    console.log(`✅ Popunder Multiplier active - ${POPUNDER_COUNT} popunders per click, max ${MAX_SESSION_POPUNDERS} per session`);
+    console.log(`✅ AGGRESSIVE Popunder Multiplier active - ${POPUNDER_COUNT} popunders per click, max ${MAX_SESSION_POPUNDERS} per session - Triggers on ALMOST EVERY interaction!`);
     
 })();
 
