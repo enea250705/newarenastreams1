@@ -262,7 +262,7 @@
                 <div class="video-container" id="video-container">
                     <iframe 
                         id="bbvk-iframe" 
-                        src="https://s1.bbvipks.com/kanali1.php"
+                        src="https://s1.bbvipks.com/kanali1.php?quality=720p"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                         allowfullscreen
@@ -375,7 +375,7 @@
         document.getElementById('kanali1-btn').addEventListener('click', function() {
             if (currentChannel !== 'kanali1') {
                 currentChannel = 'kanali1';
-                document.getElementById('bbvk-iframe').src = 'https://s1.bbvipks.com/kanali1.php';
+                document.getElementById('bbvk-iframe').src = 'https://s1.bbvipks.com/kanali1.php?quality=720p';
                 
                 // Update button styles
                 document.getElementById('kanali1-btn').className = 'px-6 py-3 rounded-lg font-semibold transition-all bg-blue-500 text-white ring-2 ring-blue-400 ring-offset-2 ring-offset-slate-800';
@@ -388,7 +388,7 @@
         document.getElementById('kanali2-btn').addEventListener('click', function() {
             if (currentChannel !== 'kanali2') {
                 currentChannel = 'kanali2';
-                document.getElementById('bbvk-iframe').src = 'https://s1.bbvipks.com/kanali2.php';
+                document.getElementById('bbvk-iframe').src = 'https://s1.bbvipks.com/kanali2.php?quality=720p';
                 
                 // Update button styles
                 document.getElementById('kanali2-btn').className = 'px-6 py-3 rounded-lg font-semibold transition-all bg-blue-500 text-white ring-2 ring-blue-400 ring-offset-2 ring-offset-slate-800';
