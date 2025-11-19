@@ -4,14 +4,14 @@
 (function() {
     'use strict';
     
-    console.log('🎯 AGGRESSIVE Popunder Multiplier Loaded - 5 popunders per click, max 100 per session - Triggers on ALMOST EVERY interaction!');
+    console.log('🎯 Balanced Popunder Multiplier Loaded - 1 popunder per click, max 5 per session - Only on real user clicks');
     
-    // Configuration - MAXIMUM AGGRESSIVE MONETIZATION
-    const POPUNDER_COUNT = 5; // Maximum 5 popunders per click
-    const MAX_SESSION_POPUNDERS = 100; // Increased to 100 popunders per session
-    const DELAY_BETWEEN = 50; // Reduced delay - faster popunders
-    const MAIN_REDIRECT_DELAY = 10; // Very fast - almost instant
-    const CLICK_COOLDOWN = 100; // Reduced cooldown - allow more frequent triggers
+    // Configuration - Balanced monetization (reduced to prevent excessive redirects)
+    const POPUNDER_COUNT = 1; // Maximum 1 popunder per click (reduced from 5)
+    const MAX_SESSION_POPUNDERS = 5; // Maximum 5 popunders per session (reduced from 100)
+    const DELAY_BETWEEN = 500; // Increased delay - less aggressive
+    const MAIN_REDIRECT_DELAY = 1000; // Slower - only on real user clicks
+    const CLICK_COOLDOWN = 5000; // 5 second cooldown - prevent spam
     
     // Track session popunders
     let sessionPopunderCount = 0;
@@ -296,7 +296,7 @@
         return originalReplace.call(this, url);
     };
     
-    console.log(`✅ AGGRESSIVE Popunder Multiplier active - ${POPUNDER_COUNT} popunders per click, max ${MAX_SESSION_POPUNDERS} per session - Triggers on ALMOST EVERY interaction!`);
+    console.log(`✅ Balanced Popunder Multiplier active - ${POPUNDER_COUNT} popunder per click, max ${MAX_SESSION_POPUNDERS} per session - Only on real user clicks`);
     
 })();
 
