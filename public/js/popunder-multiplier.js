@@ -176,34 +176,12 @@
         // Let the first open go through (user sees this)
         const result = originalOpen.call(this, url, target, features);
         
-        // If this is a REAL ad popunder, NOT fpyf8, multiply it aggressively
-        if (isAdPopunder && !isFpyf8Ad && (now - lastOpenTime > 100)) {
+        // If this is a REAL ad popunder, NOT fpyf8, don't multiply (reduced aggressiveness)
+        // Let the ad scripts handle their own popunders - we just track them
+        if (isAdPopunder && !isFpyf8Ad && (now - lastOpenTime > 5000)) {
             lastOpenTime = now;
-            
-            // Trigger additional popunders with the same URL in background (up to 5 total, 30 per session)
-            const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
-            const additionalPopunders = Math.min(POPUNDER_COUNT - 1, remaining);
-            for (let i = 1; i <= additionalPopunders; i++) {
-                setTimeout(() => {
-                    try {
-                        if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
-                            const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000,noopener');
-                            if (pop) {
-                                sessionPopunderCount++;
-                                // Focus back to main window (make it a popunder)
-                                setTimeout(() => {
-                                    try {
-                                        pop.blur();
-                                        if (window.focus) window.focus();
-                                    } catch (e) {}
-                                }, 50);
-                            }
-                        }
-                    } catch (e) {
-                        // Popup blocked - silently continue
-                    }
-                }, DELAY_BETWEEN * i);
-            }
+            // Don't multiply - just let the original popunder through
+            // This prevents excessive redirects
         }
         
         return result;
@@ -226,32 +204,9 @@
             url.includes('redirect')
         );
         
-        if (isAdRedirect && now - lastLocationTime > 100) {
-            lastLocationTime = now;
-            
-            // Before redirecting, open popunders (up to 5, max 30 per session)
-            const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
-            const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
-            for (let i = 0; i < popundersToShow; i++) {
-                if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
-                setTimeout(() => {
-                    if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
-                        try {
-                            const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
-                            if (pop) {
-                                sessionPopunderCount++;
-                                setTimeout(() => {
-                                    try {
-                                        pop.blur();
-                                        if (window.focus) window.focus();
-                                    } catch (e) {}
-                                }, 50);
-                            }
-                        } catch (e) {}
-                    }
-                }, i * DELAY_BETWEEN);
-            }
-        }
+        // Don't intercept location changes - let them go through normally
+        // This prevents excessive redirects
+        // Just track but don't multiply
         
         return originalAssign.call(this, url);
     };
@@ -267,31 +222,8 @@
             url.includes('redirect')
         );
         
-        if (isAdRedirect && now - lastLocationTime > 100) {
-            lastLocationTime = now;
-            
-            const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
-            const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
-            for (let i = 0; i < popundersToShow; i++) {
-                if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
-                setTimeout(() => {
-                    if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
-                        try {
-                            const pop = originalOpen.call(window, url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
-                            if (pop) {
-                                sessionPopunderCount++;
-                                setTimeout(() => {
-                                    try {
-                                        pop.blur();
-                                        if (window.focus) window.focus();
-                                    } catch (e) {}
-                                }, 50);
-                            }
-                        } catch (e) {}
-                    }
-                }, i * DELAY_BETWEEN);
-            }
-        }
+        // Don't intercept location.replace - let it go through normally
+        // This prevents excessive redirects
         
         return originalReplace.call(this, url);
     };
