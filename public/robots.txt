@@ -1,17 +1,20 @@
-# Allow all search engines to crawl the site
 User-agent: *
 Allow: /
 
-# Disallow admin or private areas (if any)
-# Disallow: /admin/
+# Highest priority for BBVK page
+Allow: /bbvk.html
 
 # Sitemap location
 Sitemap: https://arenastreams.com/sitemap.xml
 
-# Crawl-delay for bots (optional, in seconds)
+# Crawl-delay for better indexing
 Crawl-delay: 1
 
-# Specific rules for major search engines
+# Disallow admin and private areas (if any)
+Disallow: /admin/
+Disallow: /private/
+
+# Allow all search engines
 User-agent: Googlebot
 Allow: /
 
@@ -21,3 +24,16 @@ Allow: /
 User-agent: Slurp
 Allow: /
 
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Special priority for BBVK page
+User-agent: *
+Allow: /bbvk.html
+Crawl-delay: 0
