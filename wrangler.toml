@@ -1,0 +1,12 @@
+# Cloudflare Pages configuration
+# This file helps with local development using Wrangler
+# For Cloudflare Pages deployment, configure in the dashboard:
+# - Build output directory: public
+# - Build command: (leave empty - no build needed)
+
+name = "arenastreams"
+compatibility_date = "2024-01-01"
+
+[site]
+bucket = "./public"
+
