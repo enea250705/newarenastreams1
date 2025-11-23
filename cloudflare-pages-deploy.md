@@ -37,6 +37,8 @@
 
 ### Option 2: Deploy via Wrangler CLI
 
+**IMPORTANT**: Use `wrangler pages deploy` (NOT `wrangler deploy`)
+
 1. **Install Wrangler CLI**
    ```bash
    npm install -g wrangler
@@ -47,10 +49,12 @@
    wrangler login
    ```
 
-3. **Deploy**
+3. **Deploy to Pages** (use `pages deploy`, not just `deploy`)
    ```bash
    wrangler pages deploy public --project-name=arenastreams
    ```
+
+**Note**: If you see errors about Workers, make sure you're using `wrangler pages deploy` and not `wrangler deploy`. The `pages` subcommand is required for Cloudflare Pages.
 
 ## Important Notes
 
