@@ -1,34 +1,82 @@
-// AGGRESSIVE Popunder Multiplier - Triggers on ALMOST EVERY click/interaction
-// Multiplies REAL ad popunders (5 per click, max 100 per session)
-// Intercepts actual popunders from ad scripts and multiplies them
+// Mobile-Friendly Popunder Multiplier - Prevents excessive redirects on mobile
+// Only triggers on actual link/button clicks, NOT on scrolling or touch gestures
 (function() {
     'use strict';
     
-    console.log('🎯 Balanced Popunder Multiplier Loaded - 1 popunder per click, max 5 per session - Only on real user clicks');
+    // Detect mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     (window.innerWidth <= 768) ||
+                     ('ontouchstart' in window);
     
-    // Configuration - Balanced monetization (reduced to prevent excessive redirects)
-    const POPUNDER_COUNT = 1; // Maximum 1 popunder per click (reduced from 5)
-    const MAX_SESSION_POPUNDERS = 5; // Maximum 5 popunders per session (reduced from 100)
-    const DELAY_BETWEEN = 500; // Increased delay - less aggressive
-    const MAIN_REDIRECT_DELAY = 1000; // Slower - only on real user clicks
-    const CLICK_COOLDOWN = 5000; // 5 second cooldown - prevent spam
+    // Mobile: Much more conservative settings
+    // Desktop: Slightly more permissive but still balanced
+    const POPUNDER_COUNT = isMobile ? 0 : 1; // Mobile: 0 popunders, Desktop: 1 per click
+    const MAX_SESSION_POPUNDERS = isMobile ? 1 : 3; // Mobile: max 1, Desktop: max 3
+    const DELAY_BETWEEN = 1000; // 1 second delay
+    const MAIN_REDIRECT_DELAY = 2000; // 2 second delay - only on real clicks
+    const CLICK_COOLDOWN = isMobile ? 30000 : 10000; // Mobile: 30s cooldown, Desktop: 10s
     
     // Track session popunders
     let sessionPopunderCount = 0;
-    let sessionStartTime = Date.now();
-    
-    // Track last trigger time (allow more frequent triggers)
     let lastTriggerTime = 0;
     
-    // List of URLs for popunders (using placeholder for now - ad scripts will handle)
-    // In practice, these would be managed by the ad network scripts
+    // Track scrolling to prevent popunders during scroll
+    let isScrolling = false;
+    let scrollTimeout = null;
     
-    // Function to trigger a popunder by simulating a click that ad scripts will catch
-    // This doesn't create blank windows - it triggers the real ad scripts
+    // Detect scrolling
+    let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    window.addEventListener('scroll', function() {
+        isScrolling = true;
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+            isScrolling = false;
+        }, 500); // Consider scrolling stopped after 500ms
+    }, { passive: true });
+    
+    // Function to check if click is on an interactive element (link, button, etc.)
+    function isInteractiveElement(element) {
+        if (!element) return false;
+        
+        const tagName = element.tagName.toLowerCase();
+        const interactiveTags = ['a', 'button', 'input', 'select', 'textarea', 'label'];
+        
+        if (interactiveTags.includes(tagName)) {
+            return true;
+        }
+        
+        // Check if element has click handler or is clickable
+        if (element.onclick || element.getAttribute('onclick')) {
+            return true;
+        }
+        
+        // Check if element has role="button" or similar
+        const role = element.getAttribute('role');
+        if (role && ['button', 'link', 'menuitem', 'tab'].includes(role)) {
+            return true;
+        }
+        
+        // Check parent elements
+        let parent = element.parentElement;
+        let depth = 0;
+        while (parent && depth < 3) {
+            const parentTag = parent.tagName.toLowerCase();
+            if (interactiveTags.includes(parentTag)) {
+                return true;
+            }
+            if (parent.onclick || parent.getAttribute('onclick')) {
+                return true;
+            }
+            parent = parent.parentElement;
+            depth++;
+        }
+        
+        return false;
+    }
+    
+    // Function to trigger a popunder
     function triggerPopunder(index) {
         try {
-            // Create a synthetic click event that ad scripts will detect
-            // The ad scripts (effectivegatecpm, intellipopup) will handle the actual popunder
             const clickEvent = new MouseEvent('click', {
                 bubbles: true,
                 cancelable: true,
@@ -38,7 +86,6 @@
                 clientY: Math.random() * window.innerHeight
             });
             
-            // Dispatch on document body - ad scripts listen for clicks
             if (document.body) {
                 document.body.dispatchEvent(clickEvent);
             }
@@ -47,23 +94,32 @@
         }
     }
     
-    // Function to trigger multiple popunders - VERY AGGRESSIVE
+    // Function to trigger popunders - MOBILE SAFE
     function triggerMultiplePopunders() {
         const now = Date.now();
         
-        // Check session limit
-        if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) {
-            return; // Silent return - no logging
+        // On mobile, disable popunders completely
+        if (isMobile) {
+            return;
         }
         
-        // Very short cooldown - allow almost every click
+        // Don't trigger if scrolling
+        if (isScrolling) {
+            return;
+        }
+        
+        // Check session limit
+        if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) {
+            return;
+        }
+        
+        // Cooldown check
         if (now - lastTriggerTime < CLICK_COOLDOWN) {
             return;
         }
         
         lastTriggerTime = now;
         
-        // Calculate how many popunders we can still show
         const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
         const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
         
@@ -71,10 +127,10 @@
             return;
         }
         
-        // Trigger popunders immediately and aggressively
+        // Trigger popunders with delay
         for (let i = 0; i < popundersToShow; i++) {
             setTimeout(() => {
-                if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
+                if (sessionPopunderCount < MAX_SESSION_POPUNDERS && !isScrolling) {
                     triggerPopunder(i);
                     sessionPopunderCount++;
                 }
@@ -82,153 +138,51 @@
         }
     }
     
-    // Method 1: Intercept ALL clicks on the page - VERY AGGRESSIVE
+    // Only listen to clicks on interactive elements (links, buttons)
     document.addEventListener('click', function(e) {
-        // Trigger on ALL clicks (trusted or not - maximum coverage)
+        // On mobile, completely disable
+        if (isMobile) {
+            return;
+        }
+        
+        // Don't trigger if scrolling
+        if (isScrolling) {
+            return;
+        }
+        
+        // Only trigger on actual user clicks (trusted events)
+        if (!e.isTrusted) {
+            return;
+        }
+        
+        // Only trigger on interactive elements (links, buttons)
+        if (!isInteractiveElement(e.target)) {
+            return;
+        }
+        
+        // Small delay to let the original click action happen first
         setTimeout(() => {
-            triggerMultiplePopunders();
-        }, MAIN_REDIRECT_DELAY);
-    }, true); // Use capture phase to catch ALL clicks BEFORE other handlers
-    
-    // Method 2: Trigger on ALL user interactions - VERY AGGRESSIVE
-    const interactions = ['mousedown', 'mouseup', 'touchstart', 'touchend', 'keydown', 'keyup', 'focus', 'blur'];
-    interactions.forEach(eventType => {
-        document.addEventListener(eventType, function(e) {
-            // Trigger on ALL interactions - no isTrusted check
-            setTimeout(() => {
+            if (!isScrolling) {
                 triggerMultiplePopunders();
-            }, MAIN_REDIRECT_DELAY + 10);
-        }, true); // Capture phase - catch everything
-    });
+            }
+        }, MAIN_REDIRECT_DELAY);
+    }, true);
     
-    // Method 3: Trigger on page visibility change and focus - VERY AGGRESSIVE
-    document.addEventListener('visibilitychange', function() {
-        // Trigger on BOTH hidden and visible
-        setTimeout(() => {
-            triggerMultiplePopunders();
-        }, 50);
-    });
+    // On mobile, disable all other event listeners
+    if (!isMobile) {
+        // Only trigger on page exit (desktop only)
+        window.addEventListener('beforeunload', function() {
+            if (sessionPopunderCount < MAX_SESSION_POPUNDERS && !isMobile) {
+                try {
+                    triggerPopunder(0);
+                    sessionPopunderCount++;
+                } catch (e) {}
+            }
+        });
+    }
     
-    // Also trigger on window focus/blur
-    window.addEventListener('focus', function() {
-        setTimeout(() => {
-            triggerMultiplePopunders();
-        }, 50);
-    });
+    // Don't hook window.open or location changes - let ad scripts handle their own popunders
     
-    window.addEventListener('blur', function() {
-        setTimeout(() => {
-            triggerMultiplePopunders();
-        }, 50);
-    });
-    
-    // Method 4: Trigger when user tries to leave the page - VERY AGGRESSIVE
-    window.addEventListener('beforeunload', function() {
-        // Trigger maximum popunders on exit
-        const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
-        const popundersToShow = Math.min(POPUNDER_COUNT * 2, remaining); // Double on exit
-        for (let i = 0; i < popundersToShow; i++) {
-            if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
-            try {
-                triggerPopunder(i);
-                sessionPopunderCount++;
-            } catch (e) {}
-        }
-    });
-    
-    // Also trigger on page unload
-    window.addEventListener('unload', function() {
-        const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
-        const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
-        for (let i = 0; i < popundersToShow; i++) {
-            if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) break;
-            try {
-                triggerPopunder(i);
-                sessionPopunderCount++;
-            } catch (e) {}
-        }
-    });
-    
-    // Method 5: Hook into window.open to multiply REAL popunders from ad scripts
-    const originalOpen = window.open;
-    let openCount = 0;
-    let lastOpenTime = 0;
-    
-    window.open = function(url, target, features) {
-        const now = Date.now();
-        openCount++;
-        
-        // Check if this is from fpyf8 (display ads only - don't multiply)
-        const isFpyf8Ad = url && (
-            url.includes('fpyf8.com') || 
-            url.includes('data-zone="182209"') ||
-            document.querySelector('script[data-zone="182209"]')
-        );
-        
-        // Check if this is a real ad popunder (from effectivegatecpm, intellipopup, etc.)
-        const isAdPopunder = url && (
-            url.includes('effectivegatecpm.com') ||
-            url.includes('popunder') ||
-            url.includes('redirect') ||
-            (url !== 'about:blank' && url !== window.location.href && !url.startsWith('javascript:'))
-        );
-        
-        // Let the first open go through (user sees this)
-        const result = originalOpen.call(this, url, target, features);
-        
-        // If this is a REAL ad popunder, NOT fpyf8, don't multiply (reduced aggressiveness)
-        // Let the ad scripts handle their own popunders - we just track them
-        if (isAdPopunder && !isFpyf8Ad && (now - lastOpenTime > 5000)) {
-            lastOpenTime = now;
-            // Don't multiply - just let the original popunder through
-            // This prevents excessive redirects
-        }
-        
-        return result;
-    };
-    
-    // Method 6: Also hook location changes (for ad redirects)
-    const originalAssign = window.location.assign;
-    const originalReplace = window.location.replace;
-    let locationChangeCount = 0;
-    let lastLocationTime = 0;
-    
-    window.location.assign = function(url) {
-        const now = Date.now();
-        locationChangeCount++;
-        
-        // Check if this is an ad redirect
-        const isAdRedirect = url && (
-            url.includes('effectivegatecpm.com') ||
-            url.includes('popunder') ||
-            url.includes('redirect')
-        );
-        
-        // Don't intercept location changes - let them go through normally
-        // This prevents excessive redirects
-        // Just track but don't multiply
-        
-        return originalAssign.call(this, url);
-    };
-    
-    window.location.replace = function(url) {
-        const now = Date.now();
-        locationChangeCount++;
-        
-        // Check if this is an ad redirect
-        const isAdRedirect = url && (
-            url.includes('effectivegatecpm.com') ||
-            url.includes('popunder') ||
-            url.includes('redirect')
-        );
-        
-        // Don't intercept location.replace - let it go through normally
-        // This prevents excessive redirects
-        
-        return originalReplace.call(this, url);
-    };
-    
-    console.log(`✅ Balanced Popunder Multiplier active - ${POPUNDER_COUNT} popunder per click, max ${MAX_SESSION_POPUNDERS} per session - Only on real user clicks`);
+    console.log(`✅ ${isMobile ? 'Mobile-Safe' : 'Desktop'} Popunder Multiplier active - ${POPUNDER_COUNT} popunder per click, max ${MAX_SESSION_POPUNDERS} per session - Mobile: DISABLED`);
     
 })();
-
