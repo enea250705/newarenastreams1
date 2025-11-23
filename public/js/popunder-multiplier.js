@@ -1,5 +1,5 @@
-// Mobile-Friendly Popunder Multiplier - Prevents excessive redirects on mobile
-// Only triggers on actual link/button clicks, NOT on scrolling or touch gestures
+// Balanced Popunder Multiplier - Occasional redirects, site remains usable
+// Triggers sometimes, not on every interaction
 (function() {
     'use strict';
     
@@ -8,74 +8,34 @@
                      (window.innerWidth <= 768) ||
                      ('ontouchstart' in window);
     
-    // Mobile: Much more conservative settings
-    // Desktop: Slightly more permissive but still balanced
-    const POPUNDER_COUNT = isMobile ? 0 : 1; // Mobile: 0 popunders, Desktop: 1 per click
-    const MAX_SESSION_POPUNDERS = isMobile ? 1 : 3; // Mobile: max 1, Desktop: max 3
-    const DELAY_BETWEEN = 1000; // 1 second delay
-    const MAIN_REDIRECT_DELAY = 2000; // 2 second delay - only on real clicks
-    const CLICK_COOLDOWN = isMobile ? 30000 : 10000; // Mobile: 30s cooldown, Desktop: 10s
+    // Configuration - Occasional redirects, not aggressive
+    const POPUNDER_COUNT = 1; // 1 popunder per trigger
+    const MAX_SESSION_POPUNDERS = isMobile ? 3 : 5; // Mobile: max 3, Desktop: max 5
+    const CLICK_COOLDOWN = isMobile ? 20000 : 15000; // Mobile: 20s, Desktop: 15s between redirects
+    const TRIGGER_PROBABILITY = isMobile ? 0.15 : 0.25; // Mobile: 15% chance, Desktop: 25% chance per click
+    const PAGE_LOAD_DELAY = 8000; // Trigger after 8 seconds on page load (occasionally)
+    const PAGE_LOAD_PROBABILITY = 0.3; // 30% chance on page load
     
     // Track session popunders
     let sessionPopunderCount = 0;
     let lastTriggerTime = 0;
+    let clickCount = 0; // Track clicks to make it more random
     
     // Track scrolling to prevent popunders during scroll
     let isScrolling = false;
     let scrollTimeout = null;
     
     // Detect scrolling
-    let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
     window.addEventListener('scroll', function() {
         isScrolling = true;
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(function() {
             isScrolling = false;
-        }, 500); // Consider scrolling stopped after 500ms
+        }, 1000); // Consider scrolling stopped after 1 second
     }, { passive: true });
     
-    // Function to check if click is on an interactive element (link, button, etc.)
-    function isInteractiveElement(element) {
-        if (!element) return false;
-        
-        const tagName = element.tagName.toLowerCase();
-        const interactiveTags = ['a', 'button', 'input', 'select', 'textarea', 'label'];
-        
-        if (interactiveTags.includes(tagName)) {
-            return true;
-        }
-        
-        // Check if element has click handler or is clickable
-        if (element.onclick || element.getAttribute('onclick')) {
-            return true;
-        }
-        
-        // Check if element has role="button" or similar
-        const role = element.getAttribute('role');
-        if (role && ['button', 'link', 'menuitem', 'tab'].includes(role)) {
-            return true;
-        }
-        
-        // Check parent elements
-        let parent = element.parentElement;
-        let depth = 0;
-        while (parent && depth < 3) {
-            const parentTag = parent.tagName.toLowerCase();
-            if (interactiveTags.includes(parentTag)) {
-                return true;
-            }
-            if (parent.onclick || parent.getAttribute('onclick')) {
-                return true;
-            }
-            parent = parent.parentElement;
-            depth++;
-        }
-        
-        return false;
-    }
-    
     // Function to trigger a popunder
-    function triggerPopunder(index) {
+    function triggerPopunder() {
         try {
             const clickEvent = new MouseEvent('click', {
                 bubbles: true,
@@ -94,57 +54,42 @@
         }
     }
     
-    // Function to trigger popunders - MOBILE SAFE
-    function triggerMultiplePopunders() {
+    // Function to trigger popunder with all safety checks
+    function tryTriggerPopunder() {
         const now = Date.now();
-        
-        // On mobile, disable popunders completely
-        if (isMobile) {
-            return;
-        }
         
         // Don't trigger if scrolling
         if (isScrolling) {
-            return;
+            return false;
         }
         
         // Check session limit
         if (sessionPopunderCount >= MAX_SESSION_POPUNDERS) {
-            return;
+            return false;
         }
         
         // Cooldown check
         if (now - lastTriggerTime < CLICK_COOLDOWN) {
-            return;
+            return false;
         }
         
+        // All checks passed - trigger
         lastTriggerTime = now;
+        sessionPopunderCount++;
         
-        const remaining = MAX_SESSION_POPUNDERS - sessionPopunderCount;
-        const popundersToShow = Math.min(POPUNDER_COUNT, remaining);
+        // Random delay between 1-3 seconds before triggering
+        const randomDelay = 1000 + Math.random() * 2000;
+        setTimeout(() => {
+            if (!isScrolling && sessionPopunderCount <= MAX_SESSION_POPUNDERS) {
+                triggerPopunder();
+            }
+        }, randomDelay);
         
-        if (popundersToShow <= 0) {
-            return;
-        }
-        
-        // Trigger popunders with delay
-        for (let i = 0; i < popundersToShow; i++) {
-            setTimeout(() => {
-                if (sessionPopunderCount < MAX_SESSION_POPUNDERS && !isScrolling) {
-                    triggerPopunder(i);
-                    sessionPopunderCount++;
-                }
-            }, DELAY_BETWEEN * i);
-        }
+        return true;
     }
     
-    // Only listen to clicks on interactive elements (links, buttons)
+    // Method 1: Occasional triggers on link/button clicks
     document.addEventListener('click', function(e) {
-        // On mobile, completely disable
-        if (isMobile) {
-            return;
-        }
-        
         // Don't trigger if scrolling
         if (isScrolling) {
             return;
@@ -155,34 +100,61 @@
             return;
         }
         
-        // Only trigger on interactive elements (links, buttons)
-        if (!isInteractiveElement(e.target)) {
+        // Only trigger on links and buttons (not on body clicks)
+        const target = e.target;
+        const isLink = target.tagName === 'A' || target.closest('a');
+        const isButton = target.tagName === 'BUTTON' || target.closest('button') || 
+                        target.getAttribute('role') === 'button';
+        
+        if (!isLink && !isButton) {
             return;
         }
         
-        // Small delay to let the original click action happen first
-        setTimeout(() => {
-            if (!isScrolling) {
-                triggerMultiplePopunders();
-            }
-        }, MAIN_REDIRECT_DELAY);
+        clickCount++;
+        
+        // Random probability check - only trigger sometimes
+        // Make it more likely after a few clicks (but still random)
+        const adjustedProbability = clickCount > 5 ? TRIGGER_PROBABILITY * 1.5 : TRIGGER_PROBABILITY;
+        const shouldTrigger = Math.random() < Math.min(adjustedProbability, 0.4); // Cap at 40%
+        
+        if (shouldTrigger) {
+            tryTriggerPopunder();
+        }
     }, true);
     
-    // On mobile, disable all other event listeners
-    if (!isMobile) {
-        // Only trigger on page exit (desktop only)
-        window.addEventListener('beforeunload', function() {
-            if (sessionPopunderCount < MAX_SESSION_POPUNDERS && !isMobile) {
+    // Method 2: Occasional trigger on page load (after delay)
+    setTimeout(function() {
+        if (Math.random() < PAGE_LOAD_PROBABILITY && sessionPopunderCount < MAX_SESSION_POPUNDERS) {
+            tryTriggerPopunder();
+        }
+    }, PAGE_LOAD_DELAY);
+    
+    // Method 3: Occasional trigger when user leaves page
+    window.addEventListener('beforeunload', function() {
+        if (sessionPopunderCount < MAX_SESSION_POPUNDERS) {
+            // 50% chance on exit
+            if (Math.random() < 0.5) {
                 try {
-                    triggerPopunder(0);
+                    triggerPopunder();
                     sessionPopunderCount++;
                 } catch (e) {}
             }
-        });
-    }
+        }
+    });
     
-    // Don't hook window.open or location changes - let ad scripts handle their own popunders
+    // Method 4: Occasional trigger after user has been on page for a while
+    let timeOnPage = 0;
+    setInterval(function() {
+        timeOnPage += 10; // Every 10 seconds
+        
+        // After 30 seconds, occasionally trigger (if user is still active)
+        if (timeOnPage >= 30 && !isScrolling && document.hasFocus()) {
+            if (Math.random() < 0.1 && sessionPopunderCount < MAX_SESSION_POPUNDERS) { // 10% chance every 10 seconds after 30s
+                tryTriggerPopunder();
+            }
+        }
+    }, 10000);
     
-    console.log(`✅ ${isMobile ? 'Mobile-Safe' : 'Desktop'} Popunder Multiplier active - ${POPUNDER_COUNT} popunder per click, max ${MAX_SESSION_POPUNDERS} per session - Mobile: DISABLED`);
+    console.log(`✅ Balanced Popunder Multiplier active - ${(TRIGGER_PROBABILITY * 100).toFixed(0)}% chance per click, max ${MAX_SESSION_POPUNDERS} per session - ${isMobile ? 'Mobile' : 'Desktop'}`);
     
 })();
