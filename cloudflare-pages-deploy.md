@@ -69,8 +69,9 @@ newarenastreams/
 │   ├── js/
 │   ├── sitemap.xml
 │   └── robots.txt
-└── wrangler.toml    ← Configuration file (optional)
 ```
+
+**Note**: No `wrangler.toml` needed for Cloudflare Pages - configuration is done in the dashboard.
 
 ## After Deployment
 
