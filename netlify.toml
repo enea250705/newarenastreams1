@@ -6,25 +6,25 @@
 # Redirect old domains to new domain
 [[redirects]]
   from = "https://arenastreams.com/*"
-  to = "https://arenastreams.stream/:splat"
+  to = "https://arenastreams.site/:splat"
   status = 301
   force = true
 
 [[redirects]]
   from = "https://www.arenastreams.com/*"
-  to = "https://arenastreams.stream/:splat"
+  to = "https://arenastreams.site/:splat"
   status = 301
   force = true
 
 [[redirects]]
   from = "http://arenastreams.com/*"
-  to = "https://arenastreams.stream/:splat"
+  to = "https://arenastreams.site/:splat"
   status = 301
   force = true
 
 [[redirects]]
   from = "http://www.arenastreams.com/*"
-  to = "https://arenastreams.stream/:splat"
+  to = "https://arenastreams.site/:splat"
   status = 301
   force = true
 

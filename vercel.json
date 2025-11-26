@@ -15,7 +15,7 @@
           "value": "arenastreams.com"
         }
       ],
-      "destination": "https://arenastreams.stream/:1",
+      "destination": "https://arenastreams.site/:1",
       "permanent": true
     },
     {
@@ -26,7 +26,7 @@
           "value": "www.arenastreams.com"
         }
       ],
-      "destination": "https://arenastreams.stream/:1",
+      "destination": "https://arenastreams.site/:1",
       "permanent": true
     }
   ]
