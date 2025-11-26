@@ -5,6 +5,30 @@
   "outputDirectory": "public",
   "framework": null,
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "arenastreams.com"
+        }
+      ],
+      "destination": "https://arenastreams.stream/:1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.arenastreams.com"
+        }
+      ],
+      "destination": "https://arenastreams.stream/:1",
+      "permanent": true
+    }
+  ]
 }
 
