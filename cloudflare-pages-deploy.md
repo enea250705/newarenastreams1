@@ -4,10 +4,22 @@
 
 ### Option 1: Deploy via Cloudflare Dashboard (Recommended)
 
+**⚠️ IMPORTANT: Make sure you're in Pages, NOT Workers!**
+
 1. **Go to Cloudflare Dashboard**
    - Visit https://dash.cloudflare.com
-   - Navigate to **Pages** in the sidebar
-   - Click **Create a project**
+   - In the left sidebar, look for **"Pages"** (it's a separate section from Workers)
+   - If you see "Workers & Pages", click on **"Pages"** tab
+   - Click **"Create a project"** or **"Connect to Git"**
+
+2. **If you see a form asking for:**
+   - ❌ "Deploy command: npx wrangler deploy" → You're in **Workers** (WRONG!)
+   - ✅ "Build output directory" → You're in **Pages** (CORRECT!)
+
+   **If you're in Workers:**
+   - Go back to the sidebar
+   - Click **"Pages"** (not Workers)
+   - Start over with Pages
 
 2. **Connect Your Git Repository**
    - Select your Git provider (GitHub, GitLab, or Bitbucket)
