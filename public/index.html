@@ -10,6 +10,85 @@
       gtag('config', 'G-SCM352BR2Q');
     </script>
 
+    <!-- Block automatic redirects on mobile (allow popunders) -->
+    <script>
+    (function() {
+        'use strict';
+        // Detect mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         (window.innerWidth <= 768) ||
+                         ('ontouchstart' in window);
+        
+        if (isMobile) {
+            console.log('📱 Mobile detected - Blocking redirects, allowing popunders');
+            
+            // Block location.replace (redirects)
+            const originalReplace = window.location.replace;
+            window.location.replace = function(url) {
+                // Allow same-domain redirects (internal navigation)
+                if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#'))) {
+                    return originalReplace.call(this, url);
+                }
+                // Block external redirects
+                console.log('🚫 Blocked location.replace redirect on mobile:', url);
+                return false;
+            };
+            
+            // Block location.assign (redirects)
+            const originalAssign = window.location.assign;
+            window.location.assign = function(url) {
+                // Allow same-domain redirects (internal navigation)
+                if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#'))) {
+                    return originalAssign.call(this, url);
+                }
+                // Block external redirects
+                console.log('🚫 Blocked location.assign redirect on mobile:', url);
+                return false;
+            };
+            
+            // Block location.href changes (redirects)
+            try {
+                let locationDescriptor = Object.getOwnPropertyDescriptor(window, 'location') || 
+                                         Object.getOwnPropertyDescriptor(Object.getPrototypeOf(window), 'location');
+                
+                if (locationDescriptor && locationDescriptor.set) {
+                    const originalHrefSetter = locationDescriptor.set;
+                    Object.defineProperty(window, 'location', {
+                        set: function(url) {
+                            // Allow same-domain redirects (internal navigation)
+                            if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#'))) {
+                                return originalHrefSetter.call(this, url);
+                            }
+                            // Block external redirects
+                            console.log('🚫 Blocked location.href redirect on mobile:', url);
+                            return false;
+                        },
+                        get: locationDescriptor.get
+                    });
+                }
+            } catch(e) {
+                // Fallback: intercept location.href getter/setter
+                const originalLocation = window.location;
+                Object.defineProperty(window, 'location', {
+                    get: function() {
+                        return originalLocation;
+                    },
+                    set: function(url) {
+                        if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#'))) {
+                            originalLocation.href = url;
+                        } else {
+                            console.log('🚫 Blocked location.href redirect on mobile:', url);
+                        }
+                    }
+                });
+            }
+            
+            // Allow window.open (popunders) - this is fine
+            // Don't block window.open, as it's used for popunders which are acceptable
+        }
+    })();
+    </script>
+
     <!-- TOP PRIORITY - All Ad Scripts Load Simultaneously -->
     <script type="text/javascript" async src="//pl28000626.effectivegatecpm.com/cd/7c/85/cd7c85e35408441851b79cbe8776784e.js"></script>
     <script type="text/javascript" async src="//pl28000641.effectivegatecpm.com/ed/98/d5/ed98d5d8d2575ef088ffb52e960ac4c5.js"></script>
@@ -368,12 +447,6 @@
 
     <script async="async" data-cfasync="false" src="//pl28000645.effectivegatecpm.com/c2fb7801ff0110e20bac5f4229ea22a2/invoke.js"></script>
     <div id="container-c2fb7801ff0110e20bac5f4229ea22a2" style="margin: 20px auto; text-align: center; min-height: 250px; width: 100%; max-width: 728px;"></div>
-    <!-- LOWEST PRIORITY - Intellipopup Script (Loads LAST after all other ads) -->
-    <script type="text/javascript" data-cfasync="false">
-/*<![CDATA[/* */
-(function(){var b=window,n="be2de7f311569f44731dcfebc7245428",i=[["siteId",226+751-664-866+5241720],["minBid",0],["popundersPerIP","30:5"],["delayBetween",0],["default",true],["defaultPerDay",0],["topmostLayer","auto"]],f=["d3d3LmludGVsbGlwb3B1cC5jb20vd3BlZXJqcy5taW4uY3Nz","ZDNtcjd5MTU0ZDJxZzUuY2xvdWRmcm9udC5uZXQvcW4vb2hpZ2hsaWdodGVyLm1pbi5qcw=="],y=-1,u,q,d=function(){clearTimeout(q);y++;if(f[y]&&!(1788629682000<(new Date).getTime()&&1<y)){u=b.document.createElement("script");u.type="text/javascript";u.async=!0;var a=b.document.getElementsByTagName("script")[0];u.src="https://"+atob(f[y]);u.crossOrigin="anonymous";u.onerror=d;u.onload=function(){clearTimeout(q);b[n.slice(0,16)+n.slice(0,16)]||d()};q=setTimeout(d,5E3);a.parentNode.insertBefore(u,a)}};if(!b[n]){try{Object.freeze(b[n]=i)}catch(e){}d()}})();
-/*]]>/* */
-</script>
 
 <script async="async" data-cfasync="false" src="//pl28141622.effectivegatecpm.com/538afad06c35577ce30cce48bb0c7405/invoke.js"></script>
 <div id="container-538afad06c35577ce30cce48bb0c7405"></div>
