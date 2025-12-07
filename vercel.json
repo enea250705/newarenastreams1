@@ -14,25 +14,25 @@
   ],
   "redirects": [
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "has": [
         {
           "type": "host",
           "value": "arenastreams.com"
         }
       ],
-      "destination": "https://arenastreams.site/:1",
+      "destination": "https://arenastreams.site/:path*",
       "permanent": true
     },
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "has": [
         {
           "type": "host",
           "value": "www.arenastreams.com"
         }
       ],
-      "destination": "https://arenastreams.site/:1",
+      "destination": "https://arenastreams.site/:path*",
       "permanent": true
     }
   ]
