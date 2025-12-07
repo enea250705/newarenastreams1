@@ -1,6 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- CRITICAL: Block ALL redirects immediately - Must be first script -->
+    <script>
+    (function() {
+        'use strict';
+        // Block redirects on ALL devices (not just mobile)
+        console.log('🛡️ Redirect Protection Active - Blocking all automatic redirects');
+        
+        // Block location.replace (redirects)
+        const originalReplace = window.location.replace;
+        window.location.replace = function(url) {
+            // Allow same-domain redirects (internal navigation)
+            if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#') || url === window.location.href)) {
+                return originalReplace.call(this, url);
+            }
+            // Block ALL external redirects
+            console.log('🚫 BLOCKED location.replace redirect:', url);
+            return false;
+        };
+        
+        // Block location.assign (redirects)
+        const originalAssign = window.location.assign;
+        window.location.assign = function(url) {
+            // Allow same-domain redirects (internal navigation)
+            if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#') || url === window.location.href)) {
+                return originalAssign.call(this, url);
+            }
+            // Block ALL external redirects
+            console.log('🚫 BLOCKED location.assign redirect:', url);
+            return false;
+        };
+        
+        // Block location.href changes (redirects)
+        try {
+            let locationDescriptor = Object.getOwnPropertyDescriptor(window, 'location') || 
+                                     Object.getOwnPropertyDescriptor(Object.getPrototypeOf(window), 'location');
+            
+            if (locationDescriptor && locationDescriptor.set) {
+                const originalHrefSetter = locationDescriptor.set;
+                Object.defineProperty(window, 'location', {
+                    set: function(url) {
+                        // Allow same-domain redirects (internal navigation)
+                        if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#') || url === window.location.href)) {
+                            return originalHrefSetter.call(this, url);
+                        }
+                        // Block ALL external redirects
+                        console.log('🚫 BLOCKED location.href redirect:', url);
+                        return false;
+                    },
+                    get: locationDescriptor.get
+                });
+            }
+        } catch(e) {
+            // Fallback: intercept location.href getter/setter
+            const originalLocation = window.location;
+            Object.defineProperty(window, 'location', {
+                get: function() {
+                    return originalLocation;
+                },
+                set: function(url) {
+                    if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#') || url === window.location.href)) {
+                        originalLocation.href = url;
+                    } else {
+                        console.log('🚫 BLOCKED location.href redirect:', url);
+                    }
+                }
+            });
+        }
+        
+        // Also protect against document.location redirects
+        try {
+            Object.defineProperty(document, 'location', {
+                get: function() {
+                    return window.location;
+                },
+                set: function(url) {
+                    if (url && (url.startsWith('/') || url.includes(window.location.hostname) || url.startsWith('#') || url === window.location.href)) {
+                        window.location.href = url;
+                    } else {
+                        console.log('🚫 BLOCKED document.location redirect:', url);
+                    }
+                }
+            });
+        } catch(e) {
+            console.log('Could not protect document.location:', e);
+        }
+        
+        console.log('✅ Redirect protection fully active');
+    })();
+    </script>
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SCM352BR2Q"></script>
     <script>
